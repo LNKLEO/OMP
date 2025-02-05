@@ -101,6 +101,7 @@ const (
 	MergeIcon properties.Property = "merge_icon"
 	// UpstreamIcons allows to add custom upstream icons
 	UpstreamIcons properties.Property = "upstream_icons"
+
 	// GithubIcon shows when upstream is github
 	GithubIcon properties.Property = "github_icon"
 	// BitbucketIcon shows  when upstream is bitbucket
@@ -115,6 +116,7 @@ const (
 	GitlabIcon properties.Property = "gitlab_icon"
 	// GitIcon shows when the upstream can't be identified
 	GitIcon properties.Property = "git_icon"
+
 	// UntrackedModes list the optional untracked files mode per repo
 	UntrackedModes properties.Property = "untracked_modes"
 	// IgnoreSubmodules list the optional ignore-submodules mode per repo

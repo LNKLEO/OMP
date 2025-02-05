@@ -5,12 +5,12 @@ import (
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/LNKLEO/OMP/log"
 	"github.com/LNKLEO/OMP/properties"
 	"github.com/LNKLEO/OMP/regex"
-	"golang.org/x/exp/slices"
 
 	yaml "github.com/goccy/go-yaml"
 	toml "github.com/pelletier/go-toml/v2"
