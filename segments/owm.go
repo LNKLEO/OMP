@@ -37,7 +37,7 @@ const (
 	// CacheKeyURL key used when caching the url responsible for the response
 	CacheKeyURL string = "owm_url"
 
-	PoshOWMAPIKey = "OMP_OWM_API_KEY"
+	OMPOWMAPIKey = "OMP_OWM_API_KEY"
 )
 
 type weather struct {
@@ -74,7 +74,7 @@ func (d *Owm) getResult() (*owmDataResponse, error) {
 
 	apikey := properties.OneOf(d.props, ".", APIKey, "apiKey")
 	if len(apikey) == 0 {
-		apikey = d.env.Getenv(PoshOWMAPIKey)
+		apikey = d.env.Getenv(OMPOWMAPIKey)
 	}
 
 	location := d.props.GetString(Location, "De Bilt,NL")

@@ -46,9 +46,9 @@ func Path(config string) string {
 	// due to not using --config to set the configuration
 	hasConfig := len(config) > 0
 
-	if poshTheme := os.Getenv("OMP_THEME"); len(poshTheme) > 0 && !hasConfig {
-		log.Debug("config set using OMP_THEME:", poshTheme)
-		return poshTheme
+	if OMPTheme := os.Getenv("OMP_THEME"); len(OMPTheme) > 0 && !hasConfig {
+		log.Debug("config set using OMP_THEME:", OMPTheme)
+		return OMPTheme
 	}
 
 	if len(config) == 0 {

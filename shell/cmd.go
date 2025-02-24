@@ -18,7 +18,7 @@ func (f Feature) Cmd() Code {
 		return "ftcs_marks_enabled = true"
 	case Tooltips:
 		return "enable_tooltips()"
-	case PoshGit, Azure, LineError, Jobs, CursorPositioning:
+	case OMPGit, Azure, LineError, Jobs, CursorPositioning:
 		fallthrough
 	default:
 		return ""

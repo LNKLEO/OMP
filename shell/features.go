@@ -5,7 +5,7 @@ type Feature byte
 const (
 	Jobs Feature = iota
 	Azure
-	PoshGit
+	OMPGit
 	LineError
 	Tooltips
 	Transient

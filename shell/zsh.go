@@ -12,12 +12,12 @@ func (f Feature) Zsh() Code {
 	case CursorPositioning:
 		return unixCursorPositioning
 	case Tooltips:
-		return "enable_poshtooltips"
+		return "enable_omptooltips"
 	case Transient:
 		return "_omp_create_widget zle-line-init _omp_zle-line-init"
 	case FTCSMarks:
 		return unixFTCSMarks
-	case RPrompt, PoshGit, Azure, LineError, Jobs:
+	case RPrompt, OMPGit, Azure, LineError, Jobs:
 		fallthrough
 	default:
 		return ""

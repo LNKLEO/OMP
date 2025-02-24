@@ -64,7 +64,7 @@ function _omp_ftcs_command_start() {
 }
 
 # template function for context loading
-function set_poshcontext() {
+function set_ompcontext() {
     return
 }
 
@@ -129,7 +129,7 @@ function _omp_hook() {
         _omp_pipestatus=("$_omp_status")
     fi
 
-    set_poshcontext
+    set_ompcontext
     _omp_set_cursor_position
 
     PS1='$(_omp_get_primary)'

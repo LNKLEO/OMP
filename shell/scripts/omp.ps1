@@ -19,7 +19,7 @@ function global:Get-OMPStackCount {
 
 $global:_ompJobCount = $false
 $global:_ompFTCSMarks = $false
-$global:_ompPoshGit = $false
+$global:_ompOMPGit = $false
 $global:_ompAzure = $false
 $global:_ompExecutable = ::OMP::
 
@@ -52,7 +52,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
         $env:OMP_THEME = (Resolve-Path -Path ::CONFIG::).ProviderPath
     }
 
-    function Invoke-Utf8Posh {
+    function Invoke-UTF8OMP {
         param([string[]]$Arguments = @())
 
         if ($script:ConstrainedLanguageMode) {
@@ -192,7 +192,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
             } catch {}
         }
 
-        if ($global:_ompPoshGit) {
+        if ($global:_ompOMPGit) {
             try {
                 $global:GitStatus = Get-GitStatus
                 $env:OMP_GIT_STATUS = $global:GitStatus | ConvertTo-Json
@@ -245,7 +245,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
         $nonFSWD = Get-NonFSWD
         $stackCount = Get-OMPStackCount
         $terminalWidth = Get-TerminalWidth
-        Invoke-Utf8Posh @(
+        Invoke-UTF8OMP @(
             "print", $Type
             "--save-cache"
             "--shell=$script:ShellName"
@@ -303,7 +303,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
 
         $output
 
-        # remove any posh-git status
+        # remove any omp-git status
         $env:OMP_GIT_STATUS = $null
 
         # restore the orignal last exit code
@@ -313,7 +313,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
     $Function:prompt = $promptFunction
 
     # set secondary prompt
-    Set-PSReadLineOption -ContinuationPrompt ((Invoke-Utf8Posh @("print", "secondary", "--shell=$script:ShellName")) -join "`n")
+    Set-PSReadLineOption -ContinuationPrompt ((Invoke-UTF8OMP @("print", "secondary", "--shell=$script:ShellName")) -join "`n")
 
     ### Exported Functions ###
 
@@ -398,8 +398,8 @@ New-Module -Name "OMP-Core" -ScriptBlock {
     }
 
     function Enable-OMPLineError {
-        $validLine = (Invoke-Utf8Posh @("print", "valid", "--shell=$script:ShellName")) -join "`n"
-        $errorLine = (Invoke-Utf8Posh @("print", "error", "--shell=$script:ShellName")) -join "`n"
+        $validLine = (Invoke-UTF8OMP @("print", "valid", "--shell=$script:ShellName")) -join "`n"
+        $errorLine = (Invoke-UTF8OMP @("print", "error", "--shell=$script:ShellName")) -join "`n"
         Set-PSReadLineOption -PromptText $validLine, $errorLine
     }
 
@@ -443,7 +443,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
             $FilePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($FilePath)
         }
 
-        $output = Invoke-Utf8Posh @(
+        $output = Invoke-UTF8OMP @(
             "config", "export"
             "--format=$Format"
             "--output=$FilePath"
@@ -497,7 +497,7 @@ New-Module -Name "OMP-Core" -ScriptBlock {
             $terminalWidth = Get-TerminalWidth
             $themes | ForEach-Object -Process {
                 Write-Host "Theme: $(Get-FileHyperlink -Uri $_.FullName -Name ($_.BaseName -replace '\.omp$', ''))`n"
-                Invoke-Utf8Posh @(
+                Invoke-UTF8OMP @(
                     "print", "primary"
                     "--config=$($_.FullName)"
                     "--shell=$script:ShellName"
