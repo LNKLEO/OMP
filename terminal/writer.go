@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/shell"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -92,8 +92,6 @@ const (
 	endProgress   = "\x1b]9;4;0;0\x07"
 
 	WindowsTerminal = "Windows Terminal"
-	Warp            = "WarpTerminal"
-	ITerm           = "iTerm.app"
 	AppleTerminal   = "Apple_Terminal"
 	Unknown         = "Unknown"
 )
@@ -185,8 +183,6 @@ func ClearAfter() string {
 func FormatTitle(title string) string {
 	switch Shell {
 	// These shells don't support setting the console title.
-	case shell.ELVISH, shell.XONSH, shell.TCSH:
-		return ""
 	case shell.BASH, shell.ZSH:
 		title = trimAnsi(title)
 		s := new(strings.Builder)

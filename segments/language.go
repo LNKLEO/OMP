@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	runtime_ "runtime"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/properties"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/template"
 )
 
 const (

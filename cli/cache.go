@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
+	"github.com/LNKLEO/OMP/cache"
 
 	"github.com/spf13/cobra"
 )
@@ -13,8 +13,8 @@ import (
 // getCmd represents the get command
 var getCache = &cobra.Command{
 	Use:   "cache [path|clear|edit]",
-	Short: "Interact with the oh-my-posh cache",
-	Long: `Interact with the oh-my-posh cache.
+	Short: "Interact with the OMP cache",
+	Long: `Interact with the OMP cache.
 
 You can do the following:
 

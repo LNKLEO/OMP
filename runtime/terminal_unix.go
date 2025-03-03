@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/log"
 	"github.com/shirou/gopsutil/v3/host"
 	mem "github.com/shirou/gopsutil/v3/mem"
 	terminal "github.com/wayneashleyberry/terminal-dimensions"

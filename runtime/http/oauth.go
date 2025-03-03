@@ -6,7 +6,7 @@ import (
 	"io"
 	httplib "net/http"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
+	"github.com/LNKLEO/OMP/cache"
 )
 
 const (

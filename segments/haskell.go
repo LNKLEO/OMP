@@ -1,7 +1,7 @@
 package segments
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/properties"
 )
 
 type Haskell struct {

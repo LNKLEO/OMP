@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
+	"github.com/LNKLEO/OMP/config"
 
 	"github.com/spf13/cobra"
 )

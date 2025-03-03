@@ -4,9 +4,9 @@ import (
 	"io"
 	"io/fs"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/battery"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/http"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/runtime/battery"
+	"github.com/LNKLEO/OMP/runtime/http"
 
 	disk "github.com/shirou/gopsutil/v3/disk"
 )

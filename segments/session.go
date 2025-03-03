@@ -1,8 +1,8 @@
 package segments
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/runtime"
 )
 
 type Session struct {

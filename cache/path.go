@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime/path"
 )
 
 func Path() string {
@@ -18,8 +18,8 @@ func Path() string {
 			return "", false
 		}
 
-		// validate oh-my-posh folder, if non existent, create it
-		cachePath := filepath.Join(input, "oh-my-posh")
+		// validate OMP folder, if non existent, create it
+		cachePath := filepath.Join(input, "OMP")
 		if _, err := os.Stat(cachePath); err == nil {
 			return cachePath, true
 		}

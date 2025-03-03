@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/terminal"
 )
 
 func (e *Engine) Primary() string {
@@ -18,13 +18,6 @@ func (e *Engine) Primary() string {
 	case shell.ZSH:
 		if !e.Env.Flags().Eval {
 			break
-		}
-
-		// Warp doesn't support RPROMPT so we need to write it manually
-		if e.isWarp() {
-			e.writePrimaryRightPrompt()
-			prompt := fmt.Sprintf("PS1=%s", shell.QuotePosixStr(e.string()))
-			return prompt
 		}
 
 		prompt := fmt.Sprintf("PS1=%s", shell.QuotePosixStr(e.string()))
@@ -82,11 +75,6 @@ func (e *Engine) writePrimaryPrompt(needsPrimaryRPrompt bool) {
 	if e.Config.FinalSpace {
 		e.write(" ")
 		e.currentLineLength++
-	}
-
-	if e.Config.ITermFeatures != nil && e.isIterm() {
-		host, _ := e.Env.Host()
-		e.write(terminal.RenderItermFeatures(e.Config.ITermFeatures, e.Env.Shell(), e.Env.Pwd(), e.Env.User(), host))
 	}
 
 	if e.Config.ShellIntegration {

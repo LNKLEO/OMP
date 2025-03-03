@@ -1,9 +1,9 @@
 package config
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
-	"github.com/jandedobbeleer/oh-my-posh/src/segments"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/properties"
+	"github.com/LNKLEO/OMP/segments"
 )
 
 func Default(warning bool) *Config {

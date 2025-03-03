@@ -3,8 +3,8 @@ package properties
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/log"
 )
 
 type Wrapper struct {

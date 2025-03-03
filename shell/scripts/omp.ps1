@@ -1,6 +1,6 @@
 # remove any existing dynamic module of OMP
-if ($null -ne (Get-Module -Name "oh-my-posh-core")) {
-    Remove-Module -Name "oh-my-posh-core" -Force
+if ($null -ne (Get-Module -Name "OMP-Core")) {
+    Remove-Module -Name "OMP-Core" -Force
 }
 
 # disable all known python virtual environment prompts
@@ -8,8 +8,8 @@ $env:VIRTUAL_ENV_DISABLE_PROMPT = 1
 $env:PYENV_VIRTUALENV_DISABLE_PROMPT = 1
 
 # Helper functions which need to be defined before the module is loaded
-# See https://github.com/JanDeDobbeleer/oh-my-posh/discussions/2300
-function global:Get-PoshStackCount {
+# See https://github.com/JanDeDobbeleer/OMP/discussions/2300
+function global:Get-OMPStackCount {
     $locations = Get-Location -Stack
     if ($locations) {
         return $locations.Count
@@ -20,11 +20,11 @@ function global:Get-PoshStackCount {
 # global enablers
 $global:_ompJobCount = $false
 $global:_ompFTCSMarks = $false
-$global:_ompPoshGit = $false
+$global:_ompGit = $false
 $global:_ompAzure = $false
 $global:_ompExecutable = ::OMP::
 
-New-Module -Name "oh-my-posh-core" -ScriptBlock {
+New-Module -Name "OMP-Core" -ScriptBlock {
     # Check `ConstrainedLanguage` mode.
     $script:ConstrainedLanguageMode = $ExecutionContext.SessionState.LanguageMode -eq "ConstrainedLanguage"
 
@@ -42,18 +42,18 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
     $script:TooltipCommand = ''
     $script:JobCount = 0
 
-    $env:POWERLINE_COMMAND = "oh-my-posh"
-    $env:POSH_SHELL = "pwsh"
-    $env:POSH_SHELL_VERSION = $script:PSVersion
-    $env:POSH_SESSION_ID = ::SESSION_ID::
+    $env:POWERLINE_COMMAND = "OMP"
+    $env:OMP_SHELL = "pwsh"
+    $env:OMP_SHELL_VERSION = $script:PSVersion
+    $env:OMP_SESSION_ID = ::SESSION_ID::
     $env:CONDA_PROMPT_MODIFIER = $false
 
     # set the default theme
     if (::CONFIG:: -and (Test-Path -LiteralPath ::CONFIG::)) {
-        $env:POSH_THEME = (Resolve-Path -Path ::CONFIG::).ProviderPath
+        $env:OMP_THEME = (Resolve-Path -Path ::CONFIG::).ProviderPath
     }
 
-    function Invoke-Utf8Posh {
+    function Invoke-Utf8OMP {
         param([string[]]$Arguments = @())
 
         if ($script:ConstrainedLanguageMode) {
@@ -165,7 +165,7 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         }
     }
 
-    function Set-PoshPromptType {
+    function Set-OMPPromptType {
         if ($script:TransientPrompt -eq $true) {
             $script:PromptType = "transient"
             $script:TransientPrompt = $false
@@ -173,9 +173,9 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         }
 
         # for details about the trick to detect a debugging context, see these comments:
-        # 1) https://github.com/JanDeDobbeleer/oh-my-posh/issues/2483#issuecomment-1175761456
-        # 2) https://github.com/JanDeDobbeleer/oh-my-posh/issues/2502#issuecomment-1179968052
-        # 3) https://github.com/JanDeDobbeleer/oh-my-posh/issues/5153
+        # 1) https://github.com/JanDeDobbeleer/OMP/issues/2483#issuecomment-1175761456
+        # 2) https://github.com/JanDeDobbeleer/OMP/issues/2502#issuecomment-1179968052
+        # 3) https://github.com/JanDeDobbeleer/OMP/issues/5153
         if ($Host.Runspace.Debugger.InBreakpoint) {
             $script:PromptType = "debug"
             return
@@ -189,21 +189,21 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
 
         if ($global:_ompAzure) {
             try {
-                $env:POSH_AZURE_SUBSCRIPTION = Get-AzContext | ConvertTo-Json
+                $env:OMP_AZURE_SUBSCRIPTION = Get-AzContext | ConvertTo-Json
             }
             catch {}
         }
 
-        if ($global:_ompPoshGit) {
+        if ($global:_ompGit) {
             try {
                 $global:GitStatus = Get-GitStatus
-                $env:POSH_GIT_STATUS = $global:GitStatus | ConvertTo-Json
+                $env:OMP_GIT_STATUS = $global:GitStatus | ConvertTo-Json
             }
             catch {}
         }
     }
 
-    function Update-PoshErrorCode {
+    function Update-OMPErrorCode {
         $lastHistory = Get-History -ErrorAction Ignore -Count 1
 
         # error code should be updated only when a non-empty command is run
@@ -240,15 +240,15 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         }
     }
 
-    function Get-PoshPrompt {
+    function Get-OMPPrompt {
         param(
             [string]$Type,
             [string[]]$Arguments
         )
         $nonFSWD = Get-NonFSWD
-        $stackCount = Get-PoshStackCount
+        $stackCount = Get-OMPStackCount
         $terminalWidth = Get-TerminalWidth
-        Invoke-Utf8Posh @(
+        Invoke-Utf8OMP @(
             "print", $Type
             "--save-cache"
             "--shell=$script:ShellName"
@@ -276,19 +276,19 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         # store the orignal last exit code
         $script:OriginalLastExitCode = $global:LASTEXITCODE
 
-        Set-PoshPromptType
+        Set-OMPPromptType
 
         if ($script:PromptType -ne 'transient') {
-            Update-PoshErrorCode
+            Update-OMPErrorCode
         }
 
-        Set-PoshContext $script:ErrorCode
+        Set-OMPContext $script:ErrorCode
 
         # set the cursor positions, they are zero based so align with other platforms
-        $env:POSH_CURSOR_LINE = $Host.UI.RawUI.CursorPosition.Y + 1
-        $env:POSH_CURSOR_COLUMN = $Host.UI.RawUI.CursorPosition.X + 1
+        $env:OMP_CURSOR_LINE = $Host.UI.RawUI.CursorPosition.Y + 1
+        $env:OMP_CURSOR_COLUMN = $Host.UI.RawUI.CursorPosition.X + 1
 
-        $output = Get-PoshPrompt $script:PromptType
+        $output = Get-OMPPrompt $script:PromptType
         # make sure PSReadLine knows if we have a multiline prompt
         Set-PSReadLineOption -ExtraPromptLineCount (($output | Measure-Object -Line).Lines - 1)
 
@@ -306,9 +306,6 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
 
         $output
 
-        # remove any posh-git status
-        $env:POSH_GIT_STATUS = $null
-
         # restore the orignal last exit code
         $global:LASTEXITCODE = $script:OriginalLastExitCode
     }
@@ -316,18 +313,18 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
     $Function:prompt = $promptFunction
 
     # set secondary prompt
-    Set-PSReadLineOption -ContinuationPrompt ((Invoke-Utf8Posh @("print", "secondary", "--shell=$script:ShellName")) -join "`n")
+    Set-PSReadLineOption -ContinuationPrompt ((Invoke-Utf8OMP @("print", "secondary", "--shell=$script:ShellName")) -join "`n")
 
     ### Exported Functions ###
 
-    function Set-PoshContext([bool]$originalStatus) {}
+    function Set-OMPContext([bool]$originalStatus) {}
 
-    function Enable-PoshTooltips {
+    function Enable-OMPTooltips {
         if ($script:ConstrainedLanguageMode) {
             return
         }
 
-        Set-PSReadLineKeyHandler -Key Spacebar -BriefDescription 'OhMyPoshSpaceKeyHandler' -ScriptBlock {
+        Set-PSReadLineKeyHandler -Key Spacebar -BriefDescription 'OMPSpaceKeyHandler' -ScriptBlock {
             param([ConsoleKeyInfo]$key)
             [Microsoft.PowerShell.PSConsoleReadLine]::SelfInsert($key)
             try {
@@ -343,7 +340,7 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
 
                 $script:TooltipCommand = $command
 
-                $output = (Get-PoshPrompt "tooltip" @(
+                $output = (Get-OMPPrompt "tooltip" @(
                         "--column=$($Host.UI.RawUI.CursorPosition.X)"
                         "--command=$command"
                     )) -join ''
@@ -361,12 +358,12 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         }
     }
 
-    function Enable-PoshTransientPrompt {
+    function Enable-OMPTransientPrompt {
         if ($script:ConstrainedLanguageMode) {
             return
         }
 
-        Set-PSReadLineKeyHandler -Key Enter -BriefDescription 'OhMyPoshEnterKeyHandler' -ScriptBlock {
+        Set-PSReadLineKeyHandler -Key Enter -BriefDescription 'OMPEnterKeyHandler' -ScriptBlock {
             try {
                 $parseErrors = $null
                 [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$parseErrors, [ref]$null)
@@ -385,7 +382,7 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
             }
         }
 
-        Set-PSReadLineKeyHandler -Key Ctrl+c -BriefDescription 'OhMyPoshCtrlCKeyHandler' -ScriptBlock {
+        Set-PSReadLineKeyHandler -Key Ctrl+c -BriefDescription 'OMPCtrlCKeyHandler' -ScriptBlock {
             try {
                 $start = $null
                 [Microsoft.PowerShell.PSConsoleReadLine]::GetSelectionState([ref]$start, [ref]$null)
@@ -401,35 +398,35 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         }
     }
 
-    function Enable-PoshLineError {
-        $validLine = (Invoke-Utf8Posh @("print", "valid", "--shell=$script:ShellName")) -join "`n"
-        $errorLine = (Invoke-Utf8Posh @("print", "error", "--shell=$script:ShellName")) -join "`n"
+    function Enable-OMPLineError {
+        $validLine = (Invoke-Utf8OMP @("print", "valid", "--shell=$script:ShellName")) -join "`n"
+        $errorLine = (Invoke-Utf8OMP @("print", "error", "--shell=$script:ShellName")) -join "`n"
         Set-PSReadLineOption -PromptText $validLine, $errorLine
     }
 
     <#
     .SYNOPSIS
-        Exports the current oh-my-posh theme.
+        Exports the current OMP theme.
     .DESCRIPTION
         By default the config is exported in JSON to the clipboard.
     .EXAMPLE
-        Export-PoshTheme
+        Export-OMPTheme
 
         Exports the current theme in JSON to the clipboard.
     .EXAMPLE
-        Export-PoshTheme -Format toml
+        Export-OMPTheme -Format toml
 
         Exports the current theme in TOML to the clipboard.
     .EXAMPLE
-        Export-PoshTheme C:\temp\theme.yaml yaml
+        Export-OMPTheme C:\temp\theme.yaml yaml
 
         Exports the current theme in YAML to 'C:\temp\theme.yaml'.
     .EXAMPLE
-        Export-PoshTheme ~\theme.toml toml
+        Export-OMPTheme ~\theme.toml toml
 
         Exports the current theme in TOML to '$HOME\theme.toml'
     #>
-    function Export-PoshTheme {
+    function Export-OMPTheme {
         param(
             [Parameter(Mandatory = $false)]
             [string]
@@ -447,7 +444,7 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
             $FilePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($FilePath)
         }
 
-        $output = Invoke-Utf8Posh @(
+        $output = Invoke-Utf8OMP @(
             "config", "export"
             "--format=$Format"
             "--output=$FilePath"
@@ -462,96 +459,35 @@ New-Module -Name "oh-my-posh-core" -ScriptBlock {
         Write-Host 'Theme copied to clipboard.'
     }
 
-    function Get-PoshThemes {
-        param(
-            [Parameter(Mandatory = $false, HelpMessage = "The themes folder")]
-            [string]
-            $Path = $env:POSH_THEMES_PATH,
-            [switch]
-            [Parameter(Mandatory = $false, HelpMessage = "List themes path")]
-            $List
-        )
-
-        while (-not (Test-Path -LiteralPath $Path)) {
-            $Path = Read-Host 'Please enter the themes path'
-        }
-
-        $Path = (Resolve-Path -Path $Path).ProviderPath
-
-        $logo = @'
-   __  _____ _      ___  ___       ______         _      __
-  / / |  _  | |     |  \/  |       | ___ \       | |     \ \
- / /  | | | | |__   | .  . |_   _  | |_/ /__  ___| |__    \ \
-< <   | | | | '_ \  | |\/| | | | | |  __/ _ \/ __| '_ \    > >
- \ \  \ \_/ / | | | | |  | | |_| | | | | (_) \__ \ | | |  / /
-  \_\  \___/|_| |_| \_|  |_/\__, | \_|  \___/|___/_| |_| /_/
-                             __/ |
-                            |___/
-'@
-        Write-Host $logo
-        $themes = Get-ChildItem -Path "$Path/*" -Include '*.omp.json' | Sort-Object Name
-        if ($List -eq $true) {
-            $themes | Select-Object @{ Name = 'hyperlink'; Expression = { Get-FileHyperlink -Uri $_.FullName } } | Format-Table -HideTableHeaders
-        }
-        else {
-            $nonFSWD = Get-NonFSWD
-            $stackCount = Get-PoshStackCount
-            $terminalWidth = Get-TerminalWidth
-            $themes | ForEach-Object -Process {
-                Write-Host "Theme: $(Get-FileHyperlink -Uri $_.FullName -Name ($_.BaseName -replace '\.omp$', ''))`n"
-                Invoke-Utf8Posh @(
-                    "print", "primary"
-                    "--config=$($_.FullName)"
-                    "--shell=$script:ShellName"
-                    "--shell-version=$script:PSVersion"
-                    "--pswd=$nonFSWD"
-                    "--stack-count=$stackCount"
-                    "--terminal-width=$terminalWidth"
-                )
-                Write-Host "`n"
-            }
-        }
-        Write-Host @"
-
-Themes location: $(Get-FileHyperlink -Uri "$Path")
-
-To change your theme, adjust the init script in $PROFILE.
-Example:
-  oh-my-posh init pwsh --config '$((Join-Path $Path "jandedobbeleer.omp.json") -replace "'", "''")' | Invoke-Expression
-
-"@
-    }
-
     # perform cleanup on removal so a new initialization in current session works
     if (!$script:ConstrainedLanguageMode) {
         $ExecutionContext.SessionState.Module.OnRemove += {
-            Remove-Item Function:Get-PoshStackCount
+            Remove-Item Function:Get-OMPStackCount
             $Function:prompt = $script:OriginalPromptFunction
 
             (Get-PSReadLineOption).ContinuationPrompt = $script:OriginalContinuationPrompt
             (Get-PSReadLineOption).PromptText = $script:OriginalPromptText
 
-            if ((Get-PSReadLineKeyHandler Spacebar).Function -eq 'OhMyPoshSpaceKeyHandler') {
+            if ((Get-PSReadLineKeyHandler Spacebar).Function -eq 'OMPSpaceKeyHandler') {
                 Remove-PSReadLineKeyHandler Spacebar
             }
 
-            if ((Get-PSReadLineKeyHandler Enter).Function -eq 'OhMyPoshEnterKeyHandler') {
+            if ((Get-PSReadLineKeyHandler Enter).Function -eq 'OMPEnterKeyHandler') {
                 Set-PSReadLineKeyHandler Enter -Function AcceptLine
             }
 
-            if ((Get-PSReadLineKeyHandler Ctrl+c).Function -eq 'OhMyPoshCtrlCKeyHandler') {
+            if ((Get-PSReadLineKeyHandler Ctrl+c).Function -eq 'OMPCtrlCKeyHandler') {
                 Set-PSReadLineKeyHandler Ctrl+c -Function CopyOrCancelLine
             }
         }
     }
 
     Export-ModuleMember -Function @(
-        "Set-PoshContext"
-        "Enable-PoshTooltips"
-        "Enable-PoshTransientPrompt"
-        "Enable-PoshLineError"
-        "Export-PoshTheme"
-        "Get-PoshThemes"
+        "Set-OMPContext"
+        "Enable-OMPTooltips"
+        "Enable-OMPTransientPrompt"
+        "Enable-OMPLineError"
+        "Export-OMPTheme"
         "prompt"
     )
 } | Import-Module -Global

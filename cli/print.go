@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/prompt"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
+	"github.com/LNKLEO/OMP/prompt"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/template"
 
 	"github.com/spf13/cobra"
 )

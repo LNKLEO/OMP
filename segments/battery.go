@@ -1,8 +1,8 @@
 package segments
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/battery"
+	"github.com/LNKLEO/OMP/properties"
+	"github.com/LNKLEO/OMP/runtime/battery"
 )
 
 type Battery struct {

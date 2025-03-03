@@ -8,9 +8,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/properties"
+	"github.com/LNKLEO/OMP/regex"
 
 	yaml "github.com/goccy/go-yaml"
 	toml "github.com/pelletier/go-toml/v2"

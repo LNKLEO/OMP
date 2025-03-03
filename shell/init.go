@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/runtime/path"
 	"github.com/google/uuid"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
 )
 
 const (
@@ -40,7 +40,7 @@ func Init(env runtime.Environment, feats Features) string {
 	shell := env.Flags().Shell
 
 	switch shell {
-	case PWSH, PWSH5, ELVISH:
+	case PWSH, PWSH5:
 		executable, err := getExecutablePath(env)
 		if err != nil {
 			return noExe
@@ -56,19 +56,14 @@ func Init(env runtime.Environment, feats Features) string {
 		switch shell {
 		case PWSH, PWSH5:
 			command = "(@(& %s init %s --config=%s --print%s) -join \"`n\") | Invoke-Expression"
-		case ELVISH:
-			command = "eval ((external %s) init %s --config=%s --print%s | slurp)"
 		}
 
-		config = quotePwshOrElvishStr(env.Flags().Config)
-		executable = quotePwshOrElvishStr(executable)
+		config = quotePwshStr(env.Flags().Config)
+		executable = quotePwshStr(executable)
 
 		return fmt.Sprintf(command, executable, shell, config, additionalParams)
-	case ZSH, BASH, FISH, CMD, TCSH, XONSH:
+	case ZSH, BASH, CMD:
 		return PrintInit(env, feats, nil)
-	case NU:
-		createNuInit(env, feats)
-		return ""
 	default:
 		return fmt.Sprintf(`echo "%s is not supported by Oh My Posh"`, shell)
 	}
@@ -88,9 +83,9 @@ func PrintInit(env runtime.Environment, features Features, startTime *time.Time)
 
 	switch shell {
 	case PWSH, PWSH5:
-		executable = quotePwshOrElvishStr(executable)
-		configFile = quotePwshOrElvishStr(configFile)
-		sessionID = quotePwshOrElvishStr(sessionID)
+		executable = quotePwshStr(executable)
+		configFile = quotePwshStr(configFile)
+		sessionID = quotePwshStr(sessionID)
 		script = pwshInit
 	case ZSH:
 		executable = QuotePosixStr(executable)
@@ -102,36 +97,11 @@ func PrintInit(env runtime.Environment, features Features, startTime *time.Time)
 		configFile = QuotePosixStr(configFile)
 		sessionID = QuotePosixStr(sessionID)
 		script = bashInit
-	case FISH:
-		executable = quoteFishStr(executable)
-		configFile = quoteFishStr(configFile)
-		sessionID = quoteFishStr(sessionID)
-		script = fishInit
 	case CMD:
 		executable = escapeLuaStr(executable)
 		configFile = escapeLuaStr(configFile)
 		sessionID = escapeLuaStr(sessionID)
 		script = cmdInit
-	case NU:
-		executable = quoteNuStr(executable)
-		configFile = quoteNuStr(configFile)
-		sessionID = quoteNuStr(sessionID)
-		script = nuInit
-	case TCSH:
-		executable = quoteCshStr(executable)
-		configFile = quoteCshStr(configFile)
-		sessionID = quoteCshStr(sessionID)
-		script = tcshInit
-	case ELVISH:
-		executable = quotePwshOrElvishStr(executable)
-		configFile = quotePwshOrElvishStr(configFile)
-		sessionID = quotePwshOrElvishStr(sessionID)
-		script = elvishInit
-	case XONSH:
-		executable = quotePythonStr(executable)
-		configFile = quotePythonStr(configFile)
-		sessionID = quotePythonStr(sessionID)
-		script = xonshInit
 	default:
 		return fmt.Sprintf("echo \"No initialization script available for %s\"", shell)
 	}

@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/log"
 )
 
 const (
-	poshGitEnv = "POSH_GIT_STATUS"
+	PoshGitEnv = "OMP_GIT_STATUS"
 )
 
-type poshGit struct {
-	Index        *poshGitStatus `json:"Index"`
-	Working      *poshGitStatus `json:"Working"`
+type PoshGit struct {
+	Index        *PoshGitStatus `json:"Index"`
+	Working      *PoshGitStatus `json:"Working"`
 	RepoName     string         `json:"RepoName"`
 	Branch       string         `json:"Branch"`
 	GitDir       string         `json:"GitDir"`
@@ -27,14 +27,14 @@ type poshGit struct {
 	HasUntracked bool           `json:"HasUntracked"`
 }
 
-type poshGitStatus struct {
+type PoshGitStatus struct {
 	Added    []string `json:"Added"`
 	Modified []string `json:"Modified"`
 	Deleted  []string `json:"Deleted"`
 	Unmerged []string `json:"Unmerged"`
 }
 
-func (s *GitStatus) parsePoshGitStatus(p *poshGitStatus) {
+func (s *GitStatus) parseGitStatus(p *PoshGitStatus) {
 	if p == nil {
 		return
 	}
@@ -45,31 +45,31 @@ func (s *GitStatus) parsePoshGitStatus(p *poshGitStatus) {
 	s.Unmerged = len(p.Unmerged)
 }
 
-func (g *Git) hasPoshGitStatus() bool {
-	envStatus := g.env.Getenv(poshGitEnv)
+func (g *Git) hasGitStatus() bool {
+	envStatus := g.env.Getenv(PoshGitEnv)
 	if len(envStatus) == 0 {
-		log.Error(fmt.Errorf("%s environment variable not set, do you have the posh-git module installed?", poshGitEnv))
+		log.Error(fmt.Errorf("%s environment variable not set, do you have the posh-git module installed?", PoshGitEnv))
 		return false
 	}
 
-	var posh poshGit
-	err := json.Unmarshal([]byte(envStatus), &posh)
+	var git PoshGit
+	err := json.Unmarshal([]byte(envStatus), &git)
 	if err != nil {
 		log.Error(err)
 		return false
 	}
 
-	g.setDir(posh.GitDir)
+	g.setDir(git.GitDir)
 	g.Working = &GitStatus{}
-	g.Working.parsePoshGitStatus(posh.Working)
+	g.Working.parseGitStatus(git.Working)
 	g.Staging = &GitStatus{}
-	g.Staging.parsePoshGitStatus(posh.Index)
-	g.HEAD = g.parsePoshGitHEAD(posh.Branch)
-	g.stashCount = posh.StashCount
-	g.Ahead = posh.AheadBy
-	g.Behind = posh.BehindBy
-	g.UpstreamGone = len(posh.Upstream) == 0
-	g.Upstream = posh.Upstream
+	g.Staging.parseGitStatus(git.Index)
+	g.HEAD = g.parseGitHEAD(git.Branch)
+	g.stashCount = git.StashCount
+	g.Ahead = git.AheadBy
+	g.Behind = git.BehindBy
+	g.UpstreamGone = len(git.Upstream) == 0
+	g.Upstream = git.Upstream
 
 	g.setBranchStatus()
 
@@ -77,11 +77,11 @@ func (g *Git) hasPoshGitStatus() bool {
 		g.UpstreamIcon = g.getUpstreamIcon()
 	}
 
-	g.poshgit = true
+	g.PoshGit = true
 	return true
 }
 
-func (g *Git) parsePoshGitHEAD(head string) string {
+func (g *Git) parseGitHEAD(head string) string {
 	// commit
 	if strings.HasSuffix(head, "...)") {
 		head = strings.TrimLeft(head, "(")

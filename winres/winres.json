@@ -30,12 +30,12 @@
         },
         "info": {
           "0409": {
-            "CompanyName": "github.com/jandedobbeleer",
-            "FileDescription": "A prompt theme engine for any shell.",
-            "InternalName": "oh-my-posh",
-            "LegalCopyright": "© Jan De Dobbeleer. Licensed under MIT.",
-            "OriginalFilename": "oh-my-posh.exe",
-            "ProductName": "Oh My Posh"
+            "CompanyName": "github.com/LNKLEO",
+            "FileDescription": "A prompt theme engine for MY shell.",
+            "InternalName": "OMP",
+            "LegalCopyright": "© LNKLEO. Licensed under MIT.",
+            "OriginalFilename": "OMP.exe",
+            "ProductName": "OMP"
           }
         }
       }

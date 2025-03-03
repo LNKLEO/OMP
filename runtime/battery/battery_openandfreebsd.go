@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/cmd"
+	"github.com/LNKLEO/OMP/runtime/cmd"
 )
 
 // See https://man.openbsd.org/man8/apm.8

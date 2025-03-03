@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/properties"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/runtime/path"
 
 	"gopkg.in/ini.v1"
 )
@@ -160,7 +160,7 @@ type Git struct {
 	Merge         bool
 	CherryPick    bool
 	Revert        bool
-	poshgit       bool
+	PoshGit       bool
 	Detached      bool
 	IsBare        bool
 	UpstreamGone  bool
@@ -194,7 +194,7 @@ func (g *Git) Enabled() bool {
 	}
 
 	source := g.props.GetString(Source, Cli)
-	if source == Pwsh && g.hasPoshGitStatus() {
+	if source == Pwsh && g.hasGitStatus() {
 		return true
 	}
 
@@ -298,7 +298,7 @@ func (g *Git) Commit() *Commit {
 }
 
 func (g *Git) StashCount() int {
-	if g.poshgit || g.stashCount != 0 {
+	if g.PoshGit || g.stashCount != 0 {
 		return g.stashCount
 	}
 

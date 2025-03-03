@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/log"
 	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
 )

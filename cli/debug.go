@@ -5,14 +5,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/build"
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/prompt"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/build"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/prompt"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/template"
+	"github.com/LNKLEO/OMP/terminal"
 
 	"github.com/spf13/cobra"
 )
@@ -35,7 +35,7 @@ func createDebugCmd() *cobra.Command {
 			log.Enable()
 			log.Debug("debug mode enabled")
 
-			sh := os.Getenv("POSH_SHELL")
+			sh := os.Getenv("OMP_SHELL")
 
 			configFile := config.Path(configFlag)
 			cfg := config.Load(configFile, sh, false)

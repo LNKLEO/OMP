@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/template"
 	"github.com/spf13/cobra"
 )
 
@@ -20,14 +20,9 @@ var (
 	supportedShells = []string{
 		"bash",
 		"zsh",
-		"fish",
 		"powershell",
 		"pwsh",
 		"cmd",
-		"nu",
-		"tcsh",
-		"elvish",
-		"xonsh",
 	}
 
 	initCmd = createInitCmd()
@@ -39,11 +34,9 @@ func init() {
 
 func createInitCmd() *cobra.Command {
 	initCmd := &cobra.Command{
-		Use:   "init [bash|zsh|fish|powershell|pwsh|cmd|nu|tcsh|elvish|xonsh]",
+		Use:   "init [bash|zsh|powershell|pwsh|cmd]",
 		Short: "Initialize your shell and config",
-		Long: `Initialize your shell and config.
-
-See the documentation to initialize your shell: https://ohmyposh.dev/docs/installation/prompt.`,
+		Long: "Initialize your shell and config",
 		ValidArgs: supportedShells,
 		Args:      NoArgsOrOneValidArg,
 		Run: func(cmd *cobra.Command, args []string) {

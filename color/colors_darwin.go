@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime"
 )
 
 func GetAccentColor(env runtime.Environment) (*RGB, error) {

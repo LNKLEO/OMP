@@ -7,8 +7,8 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/log"
 )
 
 type Data any

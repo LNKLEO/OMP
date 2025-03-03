@@ -3,13 +3,13 @@ package prompt
 import (
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/template"
+	"github.com/LNKLEO/OMP/terminal"
 )
 
 var cycle *color.Cycle = &color.Cycle{}
@@ -91,11 +91,6 @@ func (e *Engine) pwd() {
 	}
 
 	// only print when supported
-	sh := e.Env.Shell()
-	if sh == shell.ELVISH || sh == shell.XONSH {
-		return
-	}
-
 	pwd := e.Env.Pwd()
 	if e.Env.IsCygwin() {
 		pwd = strings.ReplaceAll(pwd, `\`, `/`)
@@ -116,42 +111,12 @@ func (e *Engine) pwd() {
 	e.write(terminal.Pwd(pwdType, user, host, pwd))
 }
 
-func (e *Engine) getNewline() string {
-	newline := "\n"
-
-	if e.Plain || e.Env.Flags().Debug {
-		return newline
-	}
-
-	// Warp terminal will remove a newline character ('\n') from the prompt, so we hack it in.
-	// For Elvish on Windows, we do this to prevent cutting off a right-aligned block.
-	// For Tcsh, we do this to prevent a newline character from being printed.
-	switch {
-	case e.isWarp():
-		fallthrough
-	case e.Env.Shell() == shell.ELVISH && e.Env.GOOS() == runtime.WINDOWS:
-		fallthrough
-	case e.Env.Shell() == shell.TCSH:
-		return terminal.LineBreak()
-	default:
-		return newline
-	}
-}
-
 func (e *Engine) writeNewline() {
 	defer func() {
 		e.currentLineLength = 0
 	}()
 
-	e.write(e.getNewline())
-}
-
-func (e *Engine) isWarp() bool {
-	return terminal.Program == terminal.Warp
-}
-
-func (e *Engine) isIterm() bool {
-	return terminal.Program == terminal.ITerm
+	e.write("\n")
 }
 
 func (e *Engine) shouldFill(filler string, padLength int) (string, bool) {
@@ -273,7 +238,7 @@ func (e *Engine) applyPowerShellBleedPatch() {
 	// when in PowerShell, we need to clear the line after the prompt
 	// to avoid the background being printed on the next line
 	// when at the end of the buffer.
-	// See https://github.com/JanDeDobbeleer/oh-my-posh/issues/65
+	// See https://github.com/JanDeDobbeleer/OMP/issues/65
 	if e.Env.Shell() != shell.PWSH && e.Env.Shell() != shell.PWSH5 {
 		return
 	}
@@ -506,22 +471,11 @@ func New(flags *runtime.Flags) *Engine {
 	}
 
 	switch env.Shell() {
-	case shell.XONSH:
-		// In Xonsh, the behavior of wrapping at the end of a prompt line is inconsistent across platforms.
-		// On Windows, it wraps before the rightmost cell on the terminal screen, that is, the rightmost cell is never available for a prompt line.
-		if eng.Env.GOOS() == runtime.WINDOWS {
-			eng.rectifyTerminalWidth(-1)
-		}
-	case shell.TCSH, shell.ELVISH:
-		// In Tcsh, newlines in a prompt are badly translated.
-		// No silver bullet here. We have to reduce the terminal width by 1 so a right-aligned block will not be broken.
-		// In Elvish, the behavior is similar to that in Xonsh, but we do this for all platforms.
-		eng.rectifyTerminalWidth(-1)
 	case shell.PWSH, shell.PWSH5:
 		// when in PowerShell, and force patching the bleed bug
 		// we need to reduce the terminal width by 1 so the last
 		// character isn't cut off by the ANSI escape sequences
-		// See https://github.com/JanDeDobbeleer/oh-my-posh/issues/65
+		// See https://github.com/JanDeDobbeleer/OMP/issues/65
 		if cfg.PatchPwshBleed {
 			eng.rectifyTerminalWidth(-1)
 		}

@@ -38,7 +38,7 @@ func (cfg *Config) Export(format string) string {
 
 	switch cfg.Format {
 	case YAML:
-		prefix := "# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json\n\n"
+		prefix := "# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/OMP/main/themes/schema.json\n\n"
 		yamlEncoder := yaml.NewEncoder(&result)
 
 		err := yamlEncoder.Encode(cfg)
@@ -52,7 +52,7 @@ func (cfg *Config) Export(format string) string {
 		jsonEncoder.SetEscapeHTML(false)
 		jsonEncoder.SetIndent("", "  ")
 		_ = jsonEncoder.Encode(cfg)
-		prefix := "{\n  \"$schema\": \"https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json\","
+		prefix := "{\n  \"$schema\": \"https://raw.githubusercontent.com/JanDeDobbeleer/OMP/main/themes/schema.json\","
 		data := strings.Replace(result.String(), "{", prefix, 1)
 		return escapeGlyphs(data, cfg.MigrateGlyphs)
 	case TOML:

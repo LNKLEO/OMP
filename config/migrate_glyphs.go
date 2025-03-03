@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/http"
+	"github.com/LNKLEO/OMP/runtime/http"
 )
 
 type ConnectionError struct {

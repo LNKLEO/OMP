@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/Azure/go-ansiterm/winterm"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime/path"
 	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/registry"
 )

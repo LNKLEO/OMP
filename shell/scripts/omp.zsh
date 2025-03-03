@@ -1,8 +1,8 @@
-export POSH_THEME=::CONFIG::
-export POSH_SHELL='zsh'
-export POSH_SHELL_VERSION=$ZSH_VERSION
-export POSH_SESSION_ID=::SESSION_ID::
-export POWERLINE_COMMAND='oh-my-posh'
+export OMP_THEME=::CONFIG::
+export OMP_SHELL='zsh'
+export OMP_SHELL_VERSION=$ZSH_VERSION
+export OMP_SESSION_ID=::SESSION_ID::
+export POWERLINE_COMMAND='OMP'
 export CONDA_PROMPT_MODIFIER=false
 export ZLE_RPROMPT_INDENT=0
 export OSTYPE=$OSTYPE
@@ -23,7 +23,7 @@ _omp_secondary_prompt=$($_omp_executable print secondary --shell=zsh)
 
 function _omp_set_cursor_position() {
   # not supported in Midnight Commander
-  # see https://github.com/JanDeDobbeleer/oh-my-posh/issues/3415
+  # see https://github.com/JanDeDobbeleer/OMP/issues/3415
   if [[ $_omp_cursor_positioning == 0 ]] || [[ -v MC_SID ]]; then
     return
   fi
@@ -39,8 +39,8 @@ function _omp_set_cursor_position() {
 
   stty $oldstty
 
-  export POSH_CURSOR_LINE=${parts[1]}
-  export POSH_CURSOR_COLUMN=${parts[2]}
+  export OMP_CURSOR_LINE=${parts[1]}
+  export OMP_CURSOR_COLUMN=${parts[2]}
 }
 
 # template function for context loading

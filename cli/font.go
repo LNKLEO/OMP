@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/font"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/font"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/terminal"
 
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ var (
 
 This command is used to install fonts and configure the font in your terminal.
 
-  - install: oh-my-posh font install 3270`,
+  - install: OMP font install 3270`,
 		ValidArgs: []string{
 			"install",
 			"configure",

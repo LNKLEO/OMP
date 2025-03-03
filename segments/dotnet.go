@@ -1,7 +1,7 @@
 package segments
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/constants"
+	"github.com/LNKLEO/OMP/constants"
 )
 
 type Dotnet struct {

@@ -10,16 +10,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/http"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime/http"
 )
 
 func Download(cachePath, url string) (string, error) {
 	defer log.Trace(time.Now(), cachePath, url)
 
 	// some users use the blob url, we need to convert it to the raw url
-	themeBlob := "https://github.com/JanDeDobbeleer/oh-my-posh/blob/main/themes/"
-	url = strings.Replace(url, themeBlob, "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/", 1)
+	themeBlob := "https://github.com/JanDeDobbeleer/OMP/blob/main/themes/"
+	url = strings.Replace(url, themeBlob, "https://raw.githubusercontent.com/JanDeDobbeleer/OMP/main/themes/", 1)
 
 	configPath, shouldUpdate := shouldUpdate(cachePath, url)
 	if !shouldUpdate {

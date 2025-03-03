@@ -10,12 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/runtime/path"
 	"github.com/gookit/goutil/jsonutil"
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/upgrade"
 
 	json "github.com/goccy/go-json"
 	yaml "github.com/goccy/go-yaml"
@@ -33,36 +31,14 @@ func Load(configFile, sh string, migrate bool) *Config {
 		cfg.BackupAndMigrate()
 	}
 
-	if cfg.Upgrade == nil {
-		cfg.Upgrade = &upgrade.Config{
-			Source:        upgrade.CDN,
-			DisplayNotice: cfg.UpgradeNotice,
-			Auto:          cfg.AutoUpgrade,
-			Interval:      cache.ONEWEEK,
-		}
-	}
-
-	if cfg.Upgrade.Interval.IsEmpty() {
-		cfg.Upgrade.Interval = cache.ONEWEEK
-	}
-
 	if !cfg.ShellIntegration {
 		return cfg
 	}
 
 	// bash  - ok
-	// fish  - ok
 	// pwsh  - ok
 	// zsh   - ok
 	// cmd   - ok, as of v1.4.25 (chrisant996/clink#457, fixed in chrisant996/clink@8a5d7ea)
-	// nu    - built-in (and bugged) feature - nushell/nushell#5585, https://www.nushell.sh/blog/2022-08-16-nushell-0_67.html#shell-integration-fdncred-and-tyriar
-	// elv   - broken OSC sequences
-	// xonsh - broken OSC sequences
-	// tcsh  - overall broken, FTCS_COMMAND_EXECUTED could be added to POSH_POSTCMD in the future
-	switch sh {
-	case shell.ELVISH, shell.XONSH, shell.TCSH, shell.NU:
-		cfg.ShellIntegration = false
-	}
 
 	return cfg
 }
@@ -70,14 +46,14 @@ func Load(configFile, sh string, migrate bool) *Config {
 func Path(config string) string {
 	defer log.Trace(time.Now())
 
-	// if the config flag is set, we'll use that over POSH_THEME
-	// in our internal shell logic, we'll always use the POSH_THEME
+	// if the config flag is set, we'll use that over OMP_THEME
+	// in our internal shell logic, we'll always use the OMP_THEME
 	// due to not using --config to set the configuration
 	hasConfig := len(config) > 0
 
-	if poshTheme := os.Getenv("POSH_THEME"); len(poshTheme) > 0 && !hasConfig {
-		log.Debug("config set using POSH_THEME:", poshTheme)
-		return poshTheme
+	if OMPTheme := os.Getenv("OMP_THEME"); len(OMPTheme) > 0 && !hasConfig {
+		log.Debug("config set using OMP_THEME:", OMPTheme)
+		return OMPTheme
 	}
 
 	if len(config) == 0 {

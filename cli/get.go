@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/runtime"
 
 	color2 "github.com/gookit/color"
 	"github.com/spf13/cobra"
@@ -16,8 +16,8 @@ import (
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get [shell|millis|accent|toggles|width]",
-	Short: "Get a value from oh-my-posh",
-	Long: `Get a value from oh-my-posh.
+	Short: "Get a value from OMP",
+	Long: `Get a value from OMP.
 
 This command is used to get the value of the following variables:
 

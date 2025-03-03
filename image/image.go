@@ -35,11 +35,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	font_ "github.com/jandedobbeleer/oh-my-posh/src/font"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/cache"
+	font_ "github.com/LNKLEO/OMP/font"
+	"github.com/LNKLEO/OMP/regex"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/terminal"
 
 	"github.com/esimov/stackblur-go"
 	"github.com/fogleman/gg"

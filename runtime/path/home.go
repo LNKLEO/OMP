@@ -3,7 +3,7 @@ package path
 import (
 	"os"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/log"
 )
 
 func Home() string {

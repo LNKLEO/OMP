@@ -4,8 +4,8 @@ import (
 	"runtime"
 	"slices"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/terminal"
 )
 
 type result struct {

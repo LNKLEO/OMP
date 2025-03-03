@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/regex"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/battery"
+	"github.com/LNKLEO/OMP/runtime/battery"
 )
 
 func mapMostLogicalState(state string) battery.State {

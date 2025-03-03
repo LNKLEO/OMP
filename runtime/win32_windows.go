@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/regex"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/regex"
 
 	"golang.org/x/sys/windows"
 )

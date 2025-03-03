@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/maps"
+	"github.com/LNKLEO/OMP/maps"
 )
 
 type Command struct {

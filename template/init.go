@@ -3,8 +3,8 @@ package template
 import (
 	"sync"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/maps"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/LNKLEO/OMP/maps"
+	"github.com/LNKLEO/OMP/runtime"
 )
 
 const (
@@ -13,9 +13,6 @@ const (
 	IncorrectTemplate = "unable to create text based on template"
 
 	globalRef = ".$"
-
-	elvish = "elvish"
-	xonsh  = "xonsh"
 )
 
 var (

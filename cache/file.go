@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/maps"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/maps"
 )
 
 type File struct {

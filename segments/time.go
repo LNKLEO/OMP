@@ -3,7 +3,7 @@ package segments
 import (
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/properties"
 )
 
 type Time struct {

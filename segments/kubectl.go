@@ -3,7 +3,7 @@ package segments
 import (
 	"path/filepath"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/properties"
 
 	"gopkg.in/yaml.v3"
 )

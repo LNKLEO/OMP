@@ -7,8 +7,8 @@ import (
 	"math"
 	"net/url"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/log"
+	"github.com/LNKLEO/OMP/properties"
 )
 
 type Owm struct {
@@ -33,7 +33,7 @@ const (
 	// CacheKeyURL key used when caching the url responsible for the response
 	CacheKeyURL string = "owm_url"
 
-	PoshOWMAPIKey = "POSH_OWM_API_KEY"
+	PoshOWMAPIKey = "OWM_API_KEY"
 )
 
 type weather struct {

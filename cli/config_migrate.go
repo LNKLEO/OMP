@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/shell"
 
 	"github.com/spf13/cobra"
 )
@@ -25,15 +25,15 @@ You can choose to print the output to stdout, or migrate your config in the form
 
 Example usage
 
-> oh-my-posh config migrate --config ~/myconfig.omp.json
+> OMP config migrate --config ~/myconfig.omp.json
 
 Migrates the ~/myconfig.omp.json config file and prints the result to stdout.
 
-> oh-my-posh config migrate --config ~/myconfig.omp.json --format toml
+> OMP config migrate --config ~/myconfig.omp.json --format toml
 
 Migrates the ~/myconfig.omp.json config file to TOML and prints the result to stdout.
 
-> oh-my-posh config migrate --config ~/myconfig.omp.json --format toml --write
+> OMP config migrate --config ~/myconfig.omp.json --format toml --write
 
 Migrates the ~/myconfig.omp.json config file to TOML and writes the result to your config file.
 

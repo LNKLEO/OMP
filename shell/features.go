@@ -5,13 +5,11 @@ type Feature byte
 const (
 	Jobs Feature = iota
 	Azure
-	PoshGit
+	Git
 	LineError
 	Tooltips
 	Transient
 	FTCSMarks
-	Upgrade
-	Notice
 	PromptMark
 	RPrompt
 	CursorPositioning
@@ -32,18 +30,8 @@ func (f Features) Lines(shell string) Lines {
 			code = feature.Zsh()
 		case BASH:
 			code = feature.Bash()
-		case ELVISH:
-			code = feature.Elvish()
-		case TCSH:
-			code = feature.Tcsh()
-		case FISH:
-			code = feature.Fish()
 		case CMD:
 			code = feature.Cmd()
-		case NU:
-			code = feature.Nu()
-		case XONSH:
-			code = feature.Xonsh()
 		}
 
 		if len(code) > 0 {

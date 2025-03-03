@@ -5,10 +5,10 @@ import (
 	"io/fs"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/battery"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/http"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/runtime/battery"
+	"github.com/LNKLEO/OMP/runtime/http"
 
 	mock "github.com/stretchr/testify/mock"
 )

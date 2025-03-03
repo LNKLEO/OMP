@@ -1,9 +1,7 @@
 package prompt
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
+	"github.com/LNKLEO/OMP/config"
 )
 
 func (e *Engine) RPrompt() string {
@@ -30,11 +28,6 @@ func (e *Engine) RPrompt() string {
 	}
 
 	e.rpromptLength = length
-
-	if e.Env.Shell() == shell.ELVISH && e.Env.GOOS() != runtime.WINDOWS {
-		// Workaround to align with a right-aligned block on non-Windows systems.
-		text += " "
-	}
 
 	return text
 }

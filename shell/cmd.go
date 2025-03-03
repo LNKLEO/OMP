@@ -18,11 +18,7 @@ func (f Feature) Cmd() Code {
 		return "ftcs_marks_enabled = true"
 	case Tooltips:
 		return "enable_tooltips()"
-	case Upgrade:
-		return `os.execute(string.format('"%s" upgrade', omp_executable))`
-	case Notice:
-		return `os.execute(string.format('"%s" notice', omp_executable))`
-	case PromptMark, PoshGit, Azure, LineError, Jobs, CursorPositioning:
+	case PromptMark, Git, Azure, LineError, Jobs, CursorPositioning:
 		fallthrough
 	default:
 		return ""

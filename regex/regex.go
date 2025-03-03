@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/log"
 )
 
 var (

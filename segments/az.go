@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/properties"
 )
 
 type Az struct {
@@ -22,7 +22,7 @@ const (
 	Pwsh       = "pwsh"
 	Cli        = "cli"
 	FirstMatch = "first_match"
-	azureEnv   = "POSH_AZURE_SUBSCRIPTION"
+	azureEnv   = "OMP_AZURE_SUBSCRIPTION"
 )
 
 type AzureConfig struct {

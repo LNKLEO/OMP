@@ -3,11 +3,11 @@ package prompt
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/color"
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/template"
+	"github.com/LNKLEO/OMP/terminal"
 )
 
 type ExtraPromptType int
@@ -66,7 +66,7 @@ func (e *Engine) ExtraPrompt(promptType ExtraPromptType) string {
 	}
 
 	if promptType == Transient && prompt.Newline {
-		promptText = fmt.Sprintf("%s%s", e.getNewline(), promptText)
+		promptText = fmt.Sprintf("%s%s", "\n", promptText)
 	}
 
 	if promptType == Transient && e.Config.ShellIntegration {
@@ -106,7 +106,7 @@ func (e *Engine) ExtraPrompt(promptType ExtraPromptType) string {
 	case shell.PWSH, shell.PWSH5:
 		if promptType == Transient {
 			// clear the line afterwards to prevent text from being written on the same line
-			// see https://github.com/JanDeDobbeleer/oh-my-posh/issues/3628
+			// see https://github.com/JanDeDobbeleer/OMP/issues/3628
 			return str + terminal.ClearAfter()
 		}
 	}

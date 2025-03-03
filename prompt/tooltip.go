@@ -3,9 +3,9 @@ package prompt
 import (
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/terminal"
 )
 
 func (e *Engine) Tooltip(tip string) string {

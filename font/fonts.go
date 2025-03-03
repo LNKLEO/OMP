@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	cache_ "github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/http"
+	cache_ "github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/runtime/http"
 )
 
 const (

@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/build"
+	"github.com/LNKLEO/OMP/build"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,7 @@ var (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version",
-	Long:  "Print the version number of oh-my-posh.",
+	Long:  "Print the version number of OMP.",
 	Args:  cobra.NoArgs,
 	Run: func(_ *cobra.Command, _ []string) {
 		if !verbose {

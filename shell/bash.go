@@ -15,11 +15,7 @@ func (f Feature) Bash() Code {
 		return unixCursorPositioning
 	case FTCSMarks:
 		return unixFTCSMarks
-	case Upgrade:
-		return unixUpgrade
-	case Notice:
-		return unixNotice
-	case PromptMark, RPrompt, PoshGit, Azure, LineError, Jobs, Tooltips, Transient:
+	case PromptMark, RPrompt, Git, Azure, LineError, Jobs, Tooltips, Transient:
 		fallthrough
 	default:
 		return ""

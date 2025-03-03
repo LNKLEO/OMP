@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime/path"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/runtime/path"
+	"github.com/LNKLEO/OMP/shell"
 
 	"github.com/spf13/cobra"
 )
@@ -25,11 +25,11 @@ You can choose to print the output to stdout, or export your config in the forma
 
 Example usage:
 
-> oh-my-posh config export --config ~/myconfig.omp.json --format toml
+> OMP config export --config ~/myconfig.omp.json --format toml
 
 Exports the config file "~/myconfig.omp.json" in TOML format and prints the result to stdout.
 
-> oh-my-posh config export --output ~/new_config.omp.json
+> OMP config export --output ~/new_config.omp.json
 
 Exports the current config to "~/new_config.omp.json" (in JSON format).`,
 	Args: cobra.NoArgs,

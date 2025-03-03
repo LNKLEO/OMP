@@ -3,13 +3,13 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/config"
-	"github.com/jandedobbeleer/oh-my-posh/src/image"
-	"github.com/jandedobbeleer/oh-my-posh/src/prompt"
-	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
-	"github.com/jandedobbeleer/oh-my-posh/src/shell"
-	"github.com/jandedobbeleer/oh-my-posh/src/template"
-	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
+	"github.com/LNKLEO/OMP/config"
+	"github.com/LNKLEO/OMP/image"
+	"github.com/LNKLEO/OMP/prompt"
+	"github.com/LNKLEO/OMP/runtime"
+	"github.com/LNKLEO/OMP/shell"
+	"github.com/LNKLEO/OMP/template"
+	"github.com/LNKLEO/OMP/terminal"
 
 	"github.com/spf13/cobra"
 )
@@ -37,15 +37,15 @@ You can tweak the output by using additional flags:
 
 Example usage:
 
-> oh-my-posh config export image --config ~/myconfig.omp.json
+> OMP config export image --config ~/myconfig.omp.json
 
 Exports the config to an image file called myconfig.png in the current working directory.
 
-> oh-my-posh config export image --config ~/myconfig.omp.json --output ~/mytheme.png
+> OMP config export image --config ~/myconfig.omp.json --output ~/mytheme.png
 
 Exports the config to an image file ~/mytheme.png.
 
-> oh-my-posh config export image --config ~/myconfig.omp.json --author "John Doe"
+> OMP config export image --config ~/myconfig.omp.json --author "John Doe"
 
 Exports the config to an image file using customized output options.`,
 	Args: cobra.NoArgs,

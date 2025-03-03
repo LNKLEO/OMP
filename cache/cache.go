@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/log"
+	"github.com/LNKLEO/OMP/log"
 )
 
 type Cache interface {
@@ -34,9 +34,9 @@ const (
 var SessionFileName = fmt.Sprintf("%s.%s", FileName, sessionID())
 
 func sessionID() string {
-	pid := os.Getenv("POSH_SESSION_ID")
+	pid := os.Getenv("OMP_SESSION_ID")
 	if len(pid) == 0 {
-		log.Debug("POSH_SESSION_ID not set, using PID")
+		log.Debug("OMP_SESSION_ID not set, using PID")
 		pid = strconv.Itoa(os.Getppid())
 	}
 

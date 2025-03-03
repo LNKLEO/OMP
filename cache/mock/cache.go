@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
+	"github.com/LNKLEO/OMP/cache"
 	mock "github.com/stretchr/testify/mock"
 )
 

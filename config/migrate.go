@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/jandedobbeleer/oh-my-posh/src/cache"
-	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/LNKLEO/OMP/cache"
+	"github.com/LNKLEO/OMP/properties"
 )
 
 const (
@@ -18,7 +18,6 @@ func (cfg *Config) Migrate() {
 		}
 	}
 
-	cfg.updated = true
 	cfg.Version = Version
 }
 
@@ -41,12 +40,7 @@ func (segment *Segment) migrate(version int) {
 	segment.IncludeFolders = segment.migrateFolders(includeFolders)
 	segment.ExcludeFolders = segment.migrateFolders(excludeFolders)
 
-	switch segment.Type { //nolint:exhaustive
-	case UPGRADE:
-		segment.timeoutToDuration()
-	default:
-		segment.timeoutToCache()
-	}
+	segment.timeoutToCache()
 }
 
 func (segment *Segment) hasProperty(property properties.Property) bool {

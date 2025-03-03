@@ -12,23 +12,19 @@ var pwshInit string
 func (f Feature) Pwsh() Code {
 	switch f {
 	case Tooltips:
-		return "Enable-PoshTooltips"
+		return "Enable-OMPTooltips"
 	case LineError:
-		return "Enable-PoshLineError"
+		return "Enable-OMPLineError"
 	case Transient:
-		return "Enable-PoshTransientPrompt"
+		return "Enable-OMPTransientPrompt"
 	case Jobs:
 		return "$global:_ompJobCount = $true"
 	case Azure:
 		return "$global:_ompAzure = $true"
-	case PoshGit:
-		return "$global:_ompPoshGit = $true"
+	case Git:
+		return "$global:_ompGit = $true"
 	case FTCSMarks:
 		return "$global:_ompFTCSMarks = $true"
-	case Upgrade:
-		return "& $global:_ompExecutable upgrade"
-	case Notice:
-		return "& $global:_ompExecutable notice"
 	case PromptMark, RPrompt, CursorPositioning:
 		fallthrough
 	default:
@@ -36,7 +32,7 @@ func (f Feature) Pwsh() Code {
 	}
 }
 
-func quotePwshOrElvishStr(str string) string {
+func quotePwshStr(str string) string {
 	if len(str) == 0 {
 		return "''"
 	}
