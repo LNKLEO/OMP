@@ -2,8 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/LNKLEO/OMP/cache"
 
@@ -24,7 +22,6 @@ You can do the following:
 	ValidArgs: []string{
 		"path",
 		"clear",
-		"edit",
 	},
 	Args: NoArgsOrOneValidArg,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -46,9 +43,6 @@ You can do the following:
 			for _, file := range deletedFiles {
 				fmt.Println("removed cache file:", file)
 			}
-		case "edit":
-			cacheFilePath := filepath.Join(cache.Path(), cache.FileName)
-			os.Exit(editFileWithEditor(cacheFilePath))
 		}
 	},
 }

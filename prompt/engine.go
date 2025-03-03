@@ -92,9 +92,6 @@ func (e *Engine) pwd() {
 
 	// only print when supported
 	pwd := e.Env.Pwd()
-	if e.Env.IsCygwin() {
-		pwd = strings.ReplaceAll(pwd, `\`, `/`)
-	}
 
 	// Allow template logic to define when to enable the PWD (when supported)
 	tmpl := &template.Text{
@@ -446,7 +443,7 @@ func (e *Engine) rectifyTerminalWidth(diff int) {
 // of the prompt components.
 func New(flags *runtime.Flags) *Engine {
 	flags.Config = config.Path(flags.Config)
-	cfg := config.Load(flags.Config, flags.Shell, flags.Migrate)
+	cfg := config.Load(flags.Config, flags.Shell)
 
 	env := &runtime.Terminal{}
 	env.Init(flags)

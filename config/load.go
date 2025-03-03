@@ -6,11 +6,9 @@ import (
 	"os"
 	stdOS "os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
-	"github.com/LNKLEO/OMP/cache"
 	"github.com/LNKLEO/OMP/log"
 	"github.com/LNKLEO/OMP/runtime/path"
 	"github.com/gookit/goutil/jsonutil"
@@ -21,25 +19,10 @@ import (
 )
 
 // LoadConfig returns the default configuration including possible user overrides
-func Load(configFile, sh string, migrate bool) *Config {
+func Load(configFile, sh string) *Config {
 	defer log.Trace(time.Now())
 
 	cfg := loadConfig(configFile)
-
-	// only migrate automatically when the switch isn't set
-	if !migrate && cfg.Version < Version {
-		cfg.BackupAndMigrate()
-	}
-
-	if !cfg.ShellIntegration {
-		return cfg
-	}
-
-	// bash  - ok
-	// pwsh  - ok
-	// zsh   - ok
-	// cmd   - ok, as of v1.4.25 (chrisant996/clink#457, fixed in chrisant996/clink@8a5d7ea)
-
 	return cfg
 }
 
@@ -58,27 +41,6 @@ func Path(config string) string {
 
 	if len(config) == 0 {
 		return ""
-	}
-
-	if strings.HasPrefix(config, "https://") {
-		filePath, err := Download(cache.Path(), config)
-		if err != nil {
-			log.Error(err)
-			return ""
-		}
-
-		return filePath
-	}
-
-	isCygwin := func() bool {
-		return runtime.GOOS == "windows" && len(os.Getenv("OSTYPE")) > 0
-	}
-
-	// Cygwin path always needs the full path as we're on Windows but not really.
-	// Doing filepath actions will convert it to a Windows path and break the init script.
-	if isCygwin() {
-		log.Debug("cygwin detected, using full path for config")
-		return config
 	}
 
 	configFile := path.ReplaceTildePrefixWithHomeDir(config)

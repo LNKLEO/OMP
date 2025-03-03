@@ -17,7 +17,6 @@ type Template struct {
 	Shell         string
 	AbsolutePWD   string
 	OS            string
-	Version       string
 	PromptCount   int
 	SHLVL         int
 	Jobs          int

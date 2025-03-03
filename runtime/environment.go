@@ -54,7 +54,6 @@ type Environment interface {
 	HTTPRequest(url string, body io.Reader, timeout int, requestModifiers ...http.RequestModifier) ([]byte, error)
 	IsWsl() bool
 	IsWsl2() bool
-	IsCygwin() bool
 	StackCount() int
 	TerminalWidth() (int, error)
 	Cache() cache.Cache
@@ -94,7 +93,6 @@ type Flags struct {
 	NoExitCode    bool
 	SaveCache     bool
 	Init          bool
-	Migrate       bool
 	Eval          bool
 }
 

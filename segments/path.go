@@ -48,7 +48,6 @@ type Path struct {
 	windowsPath     bool
 	Writable        bool
 	RootDir         bool
-	cygPath         bool
 }
 
 const (
@@ -111,8 +110,6 @@ const (
 	RightFormat properties.Property = "right_format"
 	// GitDirFormat format to use on the git directory
 	GitDirFormat properties.Property = "gitdir_format"
-	// DisplayCygpath transforms the path to a cygpath format
-	DisplayCygpath properties.Property = "display_cygpath"
 )
 
 func (pt *Path) Template() string {
@@ -143,17 +140,7 @@ func (pt *Path) setPaths() {
 		pt.Folders = pt.splitPath()
 	}()
 
-	displayCygpath := func() bool {
-		enableCygpath := pt.props.GetBool(DisplayCygpath, false)
-		if !enableCygpath {
-			return false
-		}
-
-		return pt.env.IsCygwin()
-	}
-
-	pt.cygPath = displayCygpath()
-	pt.windowsPath = pt.env.GOOS() == runtime.WINDOWS && !pt.cygPath
+	pt.windowsPath = pt.env.GOOS() == runtime.WINDOWS
 	pt.pathSeparator = path.Separator()
 
 	pt.pwd = pt.env.Pwd()
@@ -662,19 +649,6 @@ func (pt *Path) parsePath(inputPath string) (string, string) {
 
 	if len(inputPath) == 0 {
 		return root, relative
-	}
-
-	if pt.cygPath {
-		cygPath, err := pt.env.RunCommand("cygpath", "-u", inputPath)
-		if len(cygPath) != 0 {
-			inputPath = cygPath
-			pt.pathSeparator = "/"
-		}
-
-		if err != nil {
-			pt.cygPath = false
-			pt.windowsPath = true
-		}
 	}
 
 	if pt.env.GOOS() == runtime.WINDOWS {

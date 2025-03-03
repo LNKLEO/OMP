@@ -53,11 +53,6 @@ func (term *Terminal) IsWsl2() bool {
 	return strings.Contains(uname, "WSL2")
 }
 
-func (term *Terminal) IsCygwin() bool {
-	defer log.Trace(time.Now())
-	return false
-}
-
 func (term *Terminal) TerminalWidth() (int, error) {
 	defer log.Trace(time.Now())
 

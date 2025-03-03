@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/LNKLEO/OMP/build"
 	"github.com/LNKLEO/OMP/config"
 	"github.com/LNKLEO/OMP/log"
 	"github.com/LNKLEO/OMP/prompt"
@@ -38,7 +37,7 @@ func createDebugCmd() *cobra.Command {
 			sh := os.Getenv("OMP_SHELL")
 
 			configFile := config.Path(configFlag)
-			cfg := config.Load(configFile, sh, false)
+			cfg := config.Load(configFile, sh)
 
 			flags := &runtime.Flags{
 				Config: configFile,
@@ -69,7 +68,7 @@ func createDebugCmd() *cobra.Command {
 				Plain:  plain,
 			}
 
-			fmt.Print(eng.PrintDebug(startTime, build.Version))
+			fmt.Print(eng.PrintDebug(startTime))
 		},
 	}
 

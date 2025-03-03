@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/LNKLEO/OMP/build"
 	"github.com/LNKLEO/OMP/cache"
 	"github.com/LNKLEO/OMP/log"
 	"github.com/LNKLEO/OMP/maps"
@@ -37,7 +36,6 @@ func loadCache(vars maps.Simple) {
 	Cache.PromptCount = env.Flags().PromptCount
 	Cache.Var = make(map[string]any)
 	Cache.Jobs = env.Flags().JobCount
-	Cache.Version = build.Version
 
 	if vars != nil {
 		Cache.Var = vars

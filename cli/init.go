@@ -68,7 +68,7 @@ func runInit(sh string) {
 	}
 
 	configFile := config.Path(configFlag)
-	cfg := config.Load(configFile, sh, false)
+	cfg := config.Load(configFile, sh)
 
 	flags := &runtime.Flags{
 		Shell:     sh,
