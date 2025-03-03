@@ -16,10 +16,10 @@ var (
 	defaultTransport http.RoundTripper = &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		Dial: (&net.Dialer{
-			Timeout: 10 * time.Second,
+			Timeout: 4 * time.Second,
 		}).Dial,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ResponseHeaderTimeout: 10 * time.Second,
+		TLSHandshakeTimeout:   4 * time.Second,
+		ResponseHeaderTimeout: 4 * time.Second,
 	}
 
 	HTTPClient httpClient = &http.Client{Transport: defaultTransport}

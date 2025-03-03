@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	noExe = "echo \"Unable to find Oh My Posh executable\""
+	noExe = "echo \"Unable to find OMP executable\""
 )
 
 func getExecutablePath(env runtime.Environment) (string, error) {
@@ -65,7 +65,7 @@ func Init(env runtime.Environment, feats Features) string {
 	case ZSH, BASH, CMD:
 		return PrintInit(env, feats, nil)
 	default:
-		return fmt.Sprintf(`echo "%s is not supported by Oh My Posh"`, shell)
+		return fmt.Sprintf(`echo "%s is not supported by OMP"`, shell)
 	}
 }
 

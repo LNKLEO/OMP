@@ -160,7 +160,6 @@ type Git struct {
 	Merge         bool
 	CherryPick    bool
 	Revert        bool
-	PoshGit       bool
 	Detached      bool
 	IsBare        bool
 	UpstreamGone  bool
@@ -190,11 +189,6 @@ func (g *Git) Enabled() bool {
 
 	if g.IsBare {
 		g.getBareRepoInfo()
-		return true
-	}
-
-	source := g.props.GetString(Source, Cli)
-	if source == Pwsh && g.hasGitStatus() {
 		return true
 	}
 
@@ -298,7 +292,7 @@ func (g *Git) Commit() *Commit {
 }
 
 func (g *Git) StashCount() int {
-	if g.PoshGit || g.stashCount != 0 {
+	if g.stashCount != 0 {
 		return g.stashCount
 	}
 

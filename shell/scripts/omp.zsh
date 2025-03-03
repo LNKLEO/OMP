@@ -44,7 +44,7 @@ function _omp_set_cursor_position() {
 }
 
 # template function for context loading
-function set_poshcontext() {
+function set_ompcontext() {
   return
 }
 
@@ -74,7 +74,7 @@ function _omp_precmd() {
     _omp_pipestatus=("$_omp_status")
   fi
 
-  set_poshcontext
+  set_ompcontext
   _omp_set_cursor_position
 
   # We do this to avoid unexpected expansions in a prompt string.
@@ -216,7 +216,7 @@ function _omp_create_widget() {
   esac
 }
 
-function enable_poshtooltips() {
+function enable_omptooltips() {
   local widget=${$(bindkey ' '):2}
 
   if [[ -z $widget ]]; then
@@ -227,4 +227,4 @@ function enable_poshtooltips() {
 }
 
 # legacy functions
-function enable_poshtransientprompt() {}
+function enable_omptransientprompt() {}
