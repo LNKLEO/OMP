@@ -70,6 +70,11 @@ func (term *Terminal) IsWsl2() bool {
 	return false
 }
 
+func (term *Terminal) IsCygwin() bool {
+	defer log.Trace(time.Now())
+	return len(term.Getenv("OSTYPE")) > 0
+}
+
 func (term *Terminal) TerminalWidth() (int, error) {
 	defer log.Trace(time.Now())
 
@@ -211,21 +216,16 @@ func (term *Terminal) DirIsWritable(input string) bool {
 	return term.isWriteable(input)
 }
 
-func (term *Terminal) Connection(connectionType ConnectionType) (*Connection, error) {
+func (term *Terminal) Connection() ([]*Connection, error) {
 	if term.networks == nil {
 		networks := term.getConnections()
 		if len(networks) == 0 {
 			return nil, errors.New("No connections found")
 		}
 		term.networks = networks
+		return networks, nil
 	}
 
-	for _, network := range term.networks {
-		if network.Type == connectionType {
-			return network, nil
-		}
-	}
 
-	log.Error(fmt.Errorf("Network type '%s' not found", connectionType))
 	return nil, &NotImplemented{}
 }

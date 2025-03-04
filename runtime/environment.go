@@ -54,6 +54,7 @@ type Environment interface {
 	HTTPRequest(url string, body io.Reader, timeout int, requestModifiers ...http.RequestModifier) ([]byte, error)
 	IsWsl() bool
 	IsWsl2() bool
+	IsCygwin() bool
 	StackCount() int
 	TerminalWidth() (int, error)
 	Cache() cache.Cache
@@ -63,7 +64,7 @@ type Environment interface {
 	InWSLSharedDrive() bool
 	ConvertToLinuxPath(input string) string
 	ConvertToWindowsPath(input string) string
-	Connection(connectionType ConnectionType) (*Connection, error)
+	Connection() ([]*Connection, error)
 	CursorPosition() (row, col int)
 	SystemInfo() (*SystemInfo, error)
 }
@@ -93,6 +94,7 @@ type Flags struct {
 	NoExitCode    bool
 	SaveCache     bool
 	Init          bool
+	Migrate       bool
 	Eval          bool
 }
 
@@ -133,18 +135,9 @@ func (n *NotImplemented) Error() string {
 	return "not implemented"
 }
 
-type ConnectionType string
-
-const (
-	ETHERNET  ConnectionType = "ethernet"
-	WIFI      ConnectionType = "wifi"
-	CELLULAR  ConnectionType = "cellular"
-	BLUETOOTH ConnectionType = "bluetooth"
-)
-
 type Connection struct {
 	Name         string
-	Type         ConnectionType
+	Type         string
 	SSID         string
 	TransmitRate uint64
 	ReceiveRate  uint64

@@ -91,6 +91,8 @@ const (
 	MOJO SegmentType = "mojo"
 	// MVN writes the active maven version
 	MVN SegmentType = "mvn"
+	// NETWORKS get all current active network connections
+	NETWORKS SegmentType = "networks"
 	// NODE writes which node version is currently active
 	NODE SegmentType = "node"
 	// npm version
@@ -169,6 +171,7 @@ var Segments = map[SegmentType]func() SegmentWriter{
 	MERCURIAL:       func() SegmentWriter { return &segments.Mercurial{} },
 	MOJO:            func() SegmentWriter { return &segments.Mojo{} },
 	MVN:             func() SegmentWriter { return &segments.Mvn{} },
+	NETWORKS:        func() SegmentWriter { return &segments.Networks{} },
 	NODE:            func() SegmentWriter { return &segments.Node{} },
 	NPM:             func() SegmentWriter { return &segments.Npm{} },
 	OS:              func() SegmentWriter { return &segments.Os{} },

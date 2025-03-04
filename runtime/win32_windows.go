@@ -26,8 +26,6 @@ var (
 	psapi              = syscall.NewLazyDLL("psapi.dll")
 	getModuleBaseNameA = psapi.NewProc("GetModuleBaseNameA")
 
-	iphlpapi     = syscall.NewLazyDLL("iphlpapi.dll")
-	hGetIfTable2 = iphlpapi.NewProc("GetIfTable2")
 )
 
 // enumWindows call enumWindows from user32 and returns all active windows

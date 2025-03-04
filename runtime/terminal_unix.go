@@ -53,6 +53,11 @@ func (term *Terminal) IsWsl2() bool {
 	return strings.Contains(uname, "WSL2")
 }
 
+func (term *Terminal) IsCygwin() bool {
+	defer log.Trace(time.Now())
+	return false
+}
+
 func (term *Terminal) TerminalWidth() (int, error) {
 	defer log.Trace(time.Now())
 
@@ -144,12 +149,7 @@ func (term *Terminal) DirIsWritable(input string) bool {
 	return unix.Access(input, unix.W_OK) == nil
 }
 
-func (term *Terminal) Connection(_ ConnectionType) (*Connection, error) {
-	// added to disable the linting error, we can implement this later
-	if len(term.networks) == 0 {
-		return nil, &NotImplemented{}
-	}
-
+func (term *Terminal) Connection() ([]*Connection, error) {
 	return nil, &NotImplemented{}
 }
 

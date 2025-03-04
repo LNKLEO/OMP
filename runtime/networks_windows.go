@@ -1,251 +1,234 @@
 package runtime
 
 import (
-	"errors"
+	"regexp"
 	"strings"
 	"syscall"
-	"time"
+	"unicode/utf16"
 	"unsafe"
 
 	"github.com/LNKLEO/OMP/log"
-	"golang.org/x/sys/windows"
 )
-
-var (
-	wlanapi             = syscall.NewLazyDLL("wlanapi.dll")
-	hWlanOpenHandle     = wlanapi.NewProc("WlanOpenHandle")
-	hWlanCloseHandle    = wlanapi.NewProc("WlanCloseHandle")
-	hWlanQueryInterface = wlanapi.NewProc("WlanQueryInterface")
-	hWlanEnumInterfaces = wlanapi.NewProc("WlanEnumInterfaces")
-)
-
-//nolint:revive
-type MIN_IF_TABLE2 struct {
-	NumEntries uint64
-	Table      [256]MIB_IF_ROW2
-}
-
-//nolint:revive
-const (
-	IF_MAX_STRING_SIZE         uint64 = 256
-	IF_MAX_PHYS_ADDRESS_LENGTH uint64 = 32
-)
-
-//nolint:revive
-type MIB_IF_ROW2 struct {
-	InterfaceLuid            uint64
-	InterfaceIndex           uint32
-	InterfaceGUID            windows.GUID
-	Alias                    [IF_MAX_STRING_SIZE + 1]uint16
-	Description              [IF_MAX_STRING_SIZE + 1]uint16
-	PhysicalAddressLength    uint32
-	PhysicalAddress          [IF_MAX_PHYS_ADDRESS_LENGTH]uint8
-	PermanentPhysicalAddress [IF_MAX_PHYS_ADDRESS_LENGTH]uint8
-
-	Mtu                uint32
-	Type               uint32
-	TunnelType         uint32
-	MediaType          uint32
-	PhysicalMediumType uint32
-	AccessType         uint32
-	DirectionType      uint32
-
-	InterfaceAndOperStatusFlags struct {
-		HardwareInterface bool
-		FilterInterface   bool
-		ConnectorPresent  bool
-		NotAuthenticated  bool
-		NotMediaConnected bool
-		Paused            bool
-		LowPower          bool
-		EndPointInterface bool
-	}
-
-	OperStatus        uint32
-	AdminStatus       uint32
-	MediaConnectState uint32
-	NetworkGUID       windows.GUID
-	ConnectionType    uint32
-
-	TransmitLinkSpeed uint64
-	ReceiveLinkSpeed  uint64
-
-	InOctets           uint64
-	InUcastPkts        uint64
-	InNUcastPkts       uint64
-	InDiscards         uint64
-	InErrors           uint64
-	InUnknownProtos    uint64
-	InUcastOctets      uint64
-	InMulticastOctets  uint64
-	InBroadcastOctets  uint64
-	OutOctets          uint64
-	OutUcastPkts       uint64
-	OutNUcastPkts      uint64
-	OutDiscards        uint64
-	OutErrors          uint64
-	OutUcastOctets     uint64
-	OutMulticastOctets uint64
-	OutBroadcastOctets uint64
-	OutQLen            uint64
-}
-
-//nolint:revive, unused
-type WLAN_INTERFACE_INFO_LIST struct {
-	dwNumberOfItems uint32
-	dwIndex         uint32
-	InterfaceInfo   [1]WLAN_INTERFACE_INFO
-}
-
-//nolint:revive
-type WLAN_INTERFACE_INFO struct {
-	InterfaceGuid           syscall.GUID
-	strInterfaceDescription [256]uint16
-	isState                 uint32
-}
-
-//nolint:revive
-const (
-	WLAN_MAX_NAME_LENGTH  int64 = 256
-	DOT11_SSID_MAX_LENGTH int64 = 32
-)
-
-//nolint:revive, unused
-type WLAN_CONNECTION_ATTRIBUTES struct {
-	isState                   uint32
-	wlanConnectionMode        uint32
-	strProfileName            [WLAN_MAX_NAME_LENGTH]uint16
-	wlanAssociationAttributes WLAN_ASSOCIATION_ATTRIBUTES
-	wlanSecurityAttributes    WLAN_SECURITY_ATTRIBUTES
-}
-
-//nolint:revive, unused
-type WLAN_ASSOCIATION_ATTRIBUTES struct {
-	dot11Ssid         DOT11_SSID
-	dot11BssType      uint32
-	dot11Bssid        [6]uint8
-	dot11PhyType      uint32
-	uDot11PhyIndex    uint32
-	wlanSignalQuality uint32
-	ulRxRate          uint32
-	ulTxRate          uint32
-}
-
-//nolint:revive, unused
-type WLAN_SECURITY_ATTRIBUTES struct {
-	bSecurityEnabled     uint32
-	bOneXEnabled         uint32
-	dot11AuthAlgorithm   uint32
-	dot11CipherAlgorithm uint32
-}
-
-//nolint:revive
-type DOT11_SSID struct {
-	uSSIDLength uint32
-	ucSSID      [DOT11_SSID_MAX_LENGTH]uint8
-}
 
 func (term *Terminal) getConnections() []*Connection {
 	var pIFTable2 *MIN_IF_TABLE2
 	_, _, _ = hGetIfTable2.Call(uintptr(unsafe.Pointer(&pIFTable2)))
+	reg := regexp.MustCompile("-[0-9]{4,4}$")
 
-	networks := make([]*Connection, 0)
-
+	connections := make([]*Connection, 0)
 	for i := 0; i < int(pIFTable2.NumEntries); i++ {
-		networkInterface := pIFTable2.Table[i]
-		alias := strings.TrimRight(syscall.UTF16ToString(networkInterface.Alias[:]), "\x00")
+		_if := pIFTable2.Table[i]
+		_Alias := strings.TrimRight(syscall.UTF16ToString(_if.Alias[:]), "\x00")
 
-		if networkInterface.OperStatus != 1 || // not connected or functional
-			!networkInterface.InterfaceAndOperStatusFlags.HardwareInterface || // rule out software interfaces
-			strings.HasPrefix(alias, "Local Area Connection") || // not relevant
-			strings.Index(alias, "-") >= 3 { // rule out parts of Ethernet filter interfaces
+		SSIDs := term.GetAllWifiSSID()
+
+		if !_if.InterfaceAndOperStatusFlags.HardwareInterface || // rule out software interfaces
+			_if.PhysicalMediumType == 0 ||
+			_if.OperStatus != 1 || // not connected or functional
+			strings.HasPrefix(_Alias, "Local Area Connection") || // not relevant
+			reg.MatchString(_Alias) { // rule out parts of Ethernet filter interfaces
 			// e.g. : "Ethernet-WFP Native MAC Layer LightWeight Filter-0000"
 			continue
 		}
+		network := NetworkInfo{}
 
-		var connectionType ConnectionType
-		var ssid string
-		switch networkInterface.Type {
+		network.Alias = _Alias
+		network.Interface = strings.TrimRight(syscall.UTF16ToString(_if.Description[:]), "\x00")
+		network.TransmitLinkSpeed = _if.TransmitLinkSpeed
+		network.ReceiveLinkSpeed = _if.ReceiveLinkSpeed
+
+		switch _if.Type {
+		case 1:
+			network.InterfaceType = IF_TYPE_OTHER
 		case 6:
-			connectionType = ETHERNET
-		case 237, 234, 244:
-			connectionType = CELLULAR
+			network.InterfaceType = IF_TYPE_ETHERNET_CSMACD
+		case 9:
+			network.InterfaceType = IF_TYPE_ISO88025_TOKENRING
+		case 15:
+			network.InterfaceType = IF_TYPE_FDDI
+		case 23:
+			network.InterfaceType = IF_TYPE_PPP
+		case 24:
+			network.InterfaceType = IF_TYPE_SOFTWARE_LOOPBACK
+		case 37:
+			network.InterfaceType = IF_TYPE_ATM
+		case 71:
+			network.InterfaceType = IF_TYPE_IEEE80211
+		case 131:
+			network.InterfaceType = IF_TYPE_TUNNEL
+		case 144:
+			network.InterfaceType = IF_TYPE_IEEE1394
+		case 237:
+			network.InterfaceType = IF_TYPE_IEEE80216_WMAN
+		case 243:
+			network.InterfaceType = IF_TYPE_WWANPP
+		case 244:
+			network.InterfaceType = IF_TYPE_WWANPP2
+		default:
+			network.InterfaceType = IF_TYPE_UNKNOWN
 		}
 
-		if networkInterface.PhysicalMediumType == 10 {
-			connectionType = BLUETOOTH
+		switch _if.MediaType {
+		case 0:
+			network.NDISMediaType = NdisMedium802_3
+		case 1:
+			network.NDISMediaType = NdisMedium802_5
+		case 2:
+			network.NDISMediaType = NdisMediumFddi
+		case 3:
+			network.NDISMediaType = NdisMediumWan
+		case 4:
+			network.NDISMediaType = NdisMediumLocalTalk
+		case 5:
+			network.NDISMediaType = NdisMediumDix
+		case 6:
+			network.NDISMediaType = NdisMediumArcnetRaw
+		case 7:
+			network.NDISMediaType = NdisMediumArcnet878_2
+		case 8:
+			network.NDISMediaType = NdisMediumAtm
+		case 9:
+			network.NDISMediaType = NdisMediumWirelessWan
+		case 10:
+			network.NDISMediaType = NdisMediumIrda
+		case 11:
+			network.NDISMediaType = NdisMediumBpc
+		case 12:
+			network.NDISMediaType = NdisMediumCoWan
+		case 13:
+			network.NDISMediaType = NdisMedium1394
+		case 14:
+			network.NDISMediaType = NdisMediumInfiniBand
+		case 15:
+			network.NDISMediaType = NdisMediumTunnel
+		case 16:
+			network.NDISMediaType = NdisMediumNative802_11
+		case 17:
+			network.NDISMediaType = NdisMediumLoopback
+		case 18:
+			network.NDISMediaType = NdisMediumWiMax
+		default:
+			network.NDISMediaType = NdisMediumUnknown
 		}
 
-		// skip connections which aren't relevant
-		if len(connectionType) == 0 {
-			continue
+		switch _if.PhysicalMediumType {
+		case 0:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumUnspecified
+		case 1:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumWirelessLan
+		case 2:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumCableModem
+		case 3:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumPhoneLine
+		case 4:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumPowerLine
+		case 5:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumDSL
+		case 6:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumFibreChannel
+		case 7:
+			network.NDISPhysicalMeidaType = NdisPhysicalMedium1394
+		case 8:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumWirelessWan
+		case 9:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumNative802_11
+		case 10:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumBluetooth
+		case 11:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumInfiniband
+		case 12:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumWiMax
+		case 13:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumUWB
+		case 14:
+			network.NDISPhysicalMeidaType = NdisPhysicalMedium802_3
+		case 15:
+			network.NDISPhysicalMeidaType = NdisPhysicalMedium802_5
+		case 16:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumIrda
+		case 17:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumWiredWAN
+		case 18:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumWiredCoWan
+		case 19:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumOther
+		default:
+			network.NDISPhysicalMeidaType = NdisPhysicalMediumUnknown
 		}
 
-		log.Debugf("Found network interface: %s", alias)
-
-		network := &Connection{
-			Type:         connectionType,
-			Name:         alias,
-			TransmitRate: networkInterface.TransmitLinkSpeed,
-			ReceiveRate:  networkInterface.ReceiveLinkSpeed,
-			SSID:         ssid,
+		if SSID, OK := SSIDs[network.Interface]; OK {
+			network.SSID = SSID
 		}
 
-		networks = append(networks, network)
+		log.Debugf("Found network interface: %s", _Alias)
+
+		connection := &Connection{
+			Type:         string(network.InterfaceType),
+			Name:         network.Alias,
+			TransmitRate: network.TransmitLinkSpeed,
+			ReceiveRate:  network.ReceiveLinkSpeed,
+			SSID:         network.SSID,
+		}
+		switch network.NDISPhysicalMeidaType {
+		case NdisPhysicalMedium802_3:
+			connection.Type = "Ethernet"
+		case NdisPhysicalMediumNative802_11:
+			connection.Type = "Wi-Fi"
+		case NdisPhysicalMediumBluetooth:
+			connection.Type = "Bluetooth"
+		case NdisPhysicalMediumWirelessWan:
+			connection.Type = "Cellular"
+		default:
+			connection.Type = "Other"
+		}
+
+		connections = append(connections, connection)
 	}
 
-	if wifi, err := term.wifiNetwork(); err == nil {
-		networks = append(networks, wifi)
-	}
-
-	return networks
+	return connections
 }
 
-func (term *Terminal) wifiNetwork() (*Connection, error) {
-	log.Trace(time.Now())
-	// Open handle
+func (term *Terminal) GetAllWifiSSID() map[string]string {
 	var pdwNegotiatedVersion uint32
 	var phClientHandle uint32
-	e, _, err := hWlanOpenHandle.Call(uintptr(uint32(2)), uintptr(unsafe.Pointer(nil)), uintptr(unsafe.Pointer(&pdwNegotiatedVersion)), uintptr(unsafe.Pointer(&phClientHandle)))
+	e, _, _ := hWlanOpenHandle.Call(uintptr(uint32(2)), uintptr(unsafe.Pointer(nil)), uintptr(unsafe.Pointer(&pdwNegotiatedVersion)), uintptr(unsafe.Pointer(&phClientHandle)))
 	if e != 0 {
-		return nil, err
+		return nil
 	}
 
+	// defer closing handle
 	defer func() {
 		_, _, _ = hWlanCloseHandle.Call(uintptr(phClientHandle), uintptr(unsafe.Pointer(nil)))
 	}()
 
+	ssid := make(map[string]string)
 	// list interfaces
 	var interfaceList *WLAN_INTERFACE_INFO_LIST
-	e, _, err = hWlanEnumInterfaces.Call(uintptr(phClientHandle), uintptr(unsafe.Pointer(nil)), uintptr(unsafe.Pointer(&interfaceList)))
+	e, _, _ = hWlanEnumInterfaces.Call(uintptr(phClientHandle), uintptr(unsafe.Pointer(nil)), uintptr(unsafe.Pointer(&interfaceList)))
 	if e != 0 {
-		return nil, err
+		return nil
 	}
 
-	// use first interface that is connected
 	numberOfInterfaces := int(interfaceList.dwNumberOfItems)
-	infoSize := unsafe.Sizeof(interfaceList.InterfaceInfo[0])
 	for i := 0; i < numberOfInterfaces; i++ {
-		network := (*WLAN_INTERFACE_INFO)(unsafe.Pointer(uintptr(unsafe.Pointer(&interfaceList.InterfaceInfo[0])) + uintptr(i)*infoSize))
-		if network.isState != 1 {
-			continue
+		infoSize := unsafe.Sizeof(interfaceList.InterfaceInfo[i])
+		network := (*WLAN_INTERFACE_INFO)(unsafe.Pointer(uintptr(unsafe.Pointer(&interfaceList.InterfaceInfo[i])) + uintptr(i)*infoSize))
+		if network.isState == 1 {
+			wifi := term.parseWlanInterface(network, phClientHandle)
+			ssid[wifi.Interface] = wifi.SSID
 		}
-
-		return term.parseNetworkInterface(network, phClientHandle)
 	}
-
-	return nil, errors.New("Not connected")
+	return ssid
 }
 
-func (term *Terminal) parseNetworkInterface(network *WLAN_INTERFACE_INFO, clientHandle uint32) (*Connection, error) {
-	info := Connection{
-		Type: WIFI,
-	}
+func (term *Terminal) parseWlanInterface(network *WLAN_INTERFACE_INFO, clientHandle uint32) *WifiInfo {
+	info := WifiInfo{}
+	info.Interface = strings.TrimRight(string(utf16.Decode(network.strInterfaceDescription[:])), "\x00")
 
 	// Query wifi connection state
 	var dataSize uint32
 	var wlanAttr *WLAN_CONNECTION_ATTRIBUTES
-	e, _, err := hWlanQueryInterface.Call(uintptr(clientHandle),
+	e, _, _ := hWlanQueryInterface.Call(uintptr(clientHandle),
 		uintptr(unsafe.Pointer(&network.InterfaceGuid)),
 		uintptr(7), // wlan_intf_opcode_current_connection
 		uintptr(unsafe.Pointer(nil)),
@@ -253,20 +236,110 @@ func (term *Terminal) parseNetworkInterface(network *WLAN_INTERFACE_INFO, client
 		uintptr(unsafe.Pointer(&wlanAttr)),
 		uintptr(unsafe.Pointer(nil)))
 	if e != 0 {
-		log.Error(err)
-		return &info, err
+		return &info
 	}
 
 	// SSID
 	ssid := wlanAttr.wlanAssociationAttributes.dot11Ssid
 	if ssid.uSSIDLength > 0 {
 		info.SSID = string(ssid.ucSSID[0:ssid.uSSIDLength])
-		info.Name = info.SSID
-		log.Debugf("Found wifi interface: %s", info.SSID)
 	}
 
-	info.TransmitRate = uint64(wlanAttr.wlanAssociationAttributes.ulTxRate / 1024)
-	info.ReceiveRate = uint64(wlanAttr.wlanAssociationAttributes.ulRxRate / 1024)
+	// see https://docs.microsoft.com/en-us/windows/win32/nativewifi/dot11-phy-type
+	switch wlanAttr.wlanAssociationAttributes.dot11PhyType {
+	case 1:
+		info.PhysType = FHSS
+	case 2:
+		info.PhysType = DSSS
+	case 3:
+		info.PhysType = IR
+	case 4:
+		info.PhysType = A
+	case 5:
+		info.PhysType = HRDSSS
+	case 6:
+		info.PhysType = G
+	case 7:
+		info.PhysType = N
+	case 8:
+		info.PhysType = AC
+	default:
+		info.PhysType = UNKNOWN
+	}
 
-	return &info, nil
+	// see https://docs.microsoft.com/en-us/windows/win32/nativewifi/dot11-bss-type
+	switch wlanAttr.wlanAssociationAttributes.dot11BssType {
+	case 1:
+		info.RadioType = Infrastructure
+	case 2:
+		info.RadioType = Independent
+	default:
+		info.RadioType = Any
+	}
+
+	info.Signal = int(wlanAttr.wlanAssociationAttributes.wlanSignalQuality)
+	info.TransmitRate = int(wlanAttr.wlanAssociationAttributes.ulTxRate) / 1024
+	info.ReceiveRate = int(wlanAttr.wlanAssociationAttributes.ulRxRate) / 1024
+
+	// Query wifi channel
+	dataSize = 0
+	var channel *uint32
+	e, _, _ = hWlanQueryInterface.Call(uintptr(clientHandle),
+		uintptr(unsafe.Pointer(&network.InterfaceGuid)),
+		uintptr(8), // wlan_intf_opcode_channel_number
+		uintptr(unsafe.Pointer(nil)),
+		uintptr(unsafe.Pointer(&dataSize)),
+		uintptr(unsafe.Pointer(&channel)),
+		uintptr(unsafe.Pointer(nil)))
+	if e != 0 {
+		return &info
+	}
+	info.Channel = int(*channel)
+
+	if wlanAttr.wlanSecurityAttributes.bSecurityEnabled <= 0 {
+		info.Authentication = Disabled
+		return &info
+	}
+
+	// see https://docs.microsoft.com/en-us/windows/win32/nativewifi/dot11-auth-algorithm
+	switch wlanAttr.wlanSecurityAttributes.dot11AuthAlgorithm {
+	case 1:
+		info.Authentication = OpenSystem
+	case 2:
+		info.Authentication = SharedKey
+	case 3:
+		info.Authentication = WPA
+	case 4:
+		info.Authentication = WPAPSK
+	case 5:
+		info.Authentication = WPANone
+	case 6:
+		info.Authentication = WPA2
+	case 7:
+		info.Authentication = WPA2PSK
+	default:
+		info.Authentication = UNKNOWN
+	}
+
+	// see https://docs.microsoft.com/en-us/windows/win32/nativewifi/dot11-cipher-algorithm
+	switch wlanAttr.wlanSecurityAttributes.dot11CipherAlgorithm {
+	case 0:
+		info.Cipher = None
+	case 0x1:
+		info.Cipher = WEP40
+	case 0x2:
+		info.Cipher = TKIP
+	case 0x4:
+		info.Cipher = CCMP
+	case 0x5:
+		info.Cipher = WEP104
+	case 0x100:
+		info.Cipher = WPA
+	case 0x101:
+		info.Cipher = WEP
+	default:
+		info.Cipher = UNKNOWN
+	}
+
+	return &info
 }

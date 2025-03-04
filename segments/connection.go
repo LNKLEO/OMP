@@ -1,8 +1,6 @@
 package segments
 
 import (
-	"strings"
-
 	"github.com/LNKLEO/OMP/properties"
 	"github.com/LNKLEO/OMP/runtime"
 )
@@ -22,15 +20,6 @@ func (c *Connection) Template() string {
 }
 
 func (c *Connection) Enabled() bool {
-	types := c.props.GetString(Type, "wifi|ethernet")
-	connectionTypes := strings.Split(types, "|")
-	for _, connectionType := range connectionTypes {
-		network, err := c.env.Connection(runtime.ConnectionType(connectionType))
-		if err != nil {
-			continue
-		}
-		c.Connection = *network
-		return true
-	}
-	return false
+	connections,_ := c.env.Connection();
+	return len(connections) > 0
 }
