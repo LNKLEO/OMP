@@ -99,8 +99,6 @@ const (
 	NPM SegmentType = "npm"
 	// OS write os specific icon
 	OS SegmentType = "os"
-	// OWM writes the weather coming from openweatherdata
-	OWM SegmentType = "owm"
 	// PATH represents the current path segment
 	PATH SegmentType = "path"
 	// PROJECT
@@ -175,7 +173,6 @@ var Segments = map[SegmentType]func() SegmentWriter{
 	NODE:            func() SegmentWriter { return &segments.Node{} },
 	NPM:             func() SegmentWriter { return &segments.Npm{} },
 	OS:              func() SegmentWriter { return &segments.Os{} },
-	OWM:             func() SegmentWriter { return &segments.Owm{} },
 	PATH:            func() SegmentWriter { return &segments.Path{} },
 	PROJECT:         func() SegmentWriter { return &segments.Project{} },
 	PYTHON:          func() SegmentWriter { return &segments.Python{} },
