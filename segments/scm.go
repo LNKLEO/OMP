@@ -62,7 +62,7 @@ func (s *ScmStatus) String() string {
 			return
 		}
 
-		status.WriteString(fmt.Sprintf(" %s%d", prefix, value))
+		status.WriteString(fmt.Sprintf("%s%d", prefix, value))
 	}
 
 	stringIfValue(s.Untracked, "Untracked", "?")
