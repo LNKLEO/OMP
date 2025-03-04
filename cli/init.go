@@ -76,6 +76,7 @@ func runInit(sh string) {
 		Strict:    strict,
 		Debug:     debug,
 		SaveCache: true,
+		Init:      true,
 	}
 
 	env := &runtime.Terminal{}
