@@ -103,16 +103,8 @@ const (
 	UpstreamIcons properties.Property = "upstream_icons"
 	// GithubIcon shows when upstream is github
 	GithubIcon properties.Property = "github_icon"
-	// BitbucketIcon shows  when upstream is bitbucket
-	BitbucketIcon properties.Property = "bitbucket_icon"
 	// AzureDevOpsIcon shows  when upstream is azure devops
 	AzureDevOpsIcon properties.Property = "azure_devops_icon"
-	// CodeCommit shows  when upstream is aws codecommit
-	CodeCommit properties.Property = "codecommit_icon"
-	// CodebergIcon shows when upstream is codeberg
-	CodebergIcon properties.Property = "codeberg_icon"
-	// GitlabIcon shows when upstream is gitlab
-	GitlabIcon properties.Property = "gitlab_icon"
 	// GitIcon shows when the upstream can't be identified
 	GitIcon properties.Property = "git_icon"
 	// UntrackedModes list the optional untracked files mode per repo
@@ -537,12 +529,6 @@ func (g *Git) cleanUpstreamURL(url string) string {
 		return fmt.Sprintf("https://%s/%s", match["URL"], repoPath)
 	}
 
-	// codecommit::region-identifier-id://repo-name
-	match = regex.FindNamedRegexMatch(`codecommit::(?P<URL>[a-z0-9-]+)://(?P<PATH>[\w\.@\:/\-~]+)`, url)
-	if len(match) != 0 {
-		return fmt.Sprintf("https://%s.console.aws.amazon.com/codesuite/codecommit/repositories/%s/browse?region=%s", match["URL"], match["PATH"], match["URL"])
-	}
-
 	// user@host.xz:/path/to/repo.git
 	match = regex.FindNamedRegexMatch(`.*@(?P<URL>.*):(?P<PATH>.*)`, url)
 	if len(match) == 0 {
@@ -572,19 +558,15 @@ func (g *Git) getUpstreamIcon() string {
 		Default string
 	}{
 		"github":           {GithubIcon, "\uF408"},
-		"gitlab":           {GitlabIcon, "\uF296"},
-		"bitbucket":        {BitbucketIcon, "\uF171"},
 		"dev.azure.com":    {AzureDevOpsIcon, "\uEBE8"},
 		"visualstudio.com": {AzureDevOpsIcon, "\uEBE8"},
-		"codecommit":       {CodeCommit, "\uF270"},
-		"codeberg":         {CodebergIcon, "\uF330"},
 	}
 	for key, value := range defaults {
 		if strings.Contains(g.UpstreamURL, key) {
 			return g.props.GetString(value.Icon, value.Default)
 		}
 	}
-	return g.props.GetString(GitIcon, "\uE5FB ")
+	return g.props.GetString(GitIcon, "\uE5FB")
 }
 
 func (g *Git) setGitStatus() {
@@ -721,7 +703,7 @@ func (g *Git) setGitHEADContext() {
 		onto = g.formatBranch(onto)
 		current := parseInt("rebase-merge/msgnum")
 		total := parseInt("rebase-merge/end")
-		icon := g.props.GetString(RebaseIcon, "\uE728 ")
+		icon := g.props.GetString(RebaseIcon, "\uE728")
 
 		g.Rebase = &Rebase{
 			HEAD:    head,
@@ -738,7 +720,7 @@ func (g *Git) setGitHEADContext() {
 		head := getPrettyNameOrigin("rebase-apply/head-name")
 		current := parseInt("rebase-apply/next")
 		total := parseInt("rebase-apply/last")
-		icon := g.props.GetString(RebaseIcon, "\uE728 ")
+		icon := g.props.GetString(RebaseIcon, "\uE728")
 
 		g.Rebase = &Rebase{
 			HEAD:    head,
@@ -755,7 +737,7 @@ func (g *Git) setGitHEADContext() {
 
 	if g.hasGitFile("MERGE_MSG") {
 		g.Merge = true
-		icon := g.props.GetString(MergeIcon, "\uE727 ")
+		icon := g.props.GetString(MergeIcon, "\uE727")
 		mergeContext := g.FileContents(g.mainSCMDir, "MERGE_MSG")
 		matches := regex.FindNamedRegexMatch(`Merge (remote-tracking )?(?P<type>branch|commit|tag) '(?P<theirs>.*)'`, mergeContext)
 		// head := g.getGitRefFileSymbolicName("ORIG_HEAD")
@@ -785,7 +767,7 @@ func (g *Git) setGitHEADContext() {
 	if g.hasGitFile("CHERRY_PICK_HEAD") {
 		g.CherryPick = true
 		sha := g.FileContents(g.mainSCMDir, "CHERRY_PICK_HEAD")
-		cherry := g.props.GetString(CherryPickIcon, "\uE29B ")
+		cherry := g.props.GetString(CherryPickIcon, "\uE29B")
 		g.HEAD = fmt.Sprintf("%s%s%s onto %s", cherry, commitIcon, g.formatSHA(sha), formatDetached())
 		return
 	}
@@ -793,7 +775,7 @@ func (g *Git) setGitHEADContext() {
 	if g.hasGitFile("REVERT_HEAD") {
 		g.Revert = true
 		sha := g.FileContents(g.mainSCMDir, "REVERT_HEAD")
-		revert := g.props.GetString(RevertIcon, "\uF0E2 ")
+		revert := g.props.GetString(RevertIcon, "\uF0E2")
 		g.HEAD = fmt.Sprintf("%s%s%s onto %s", revert, commitIcon, g.formatSHA(sha), formatDetached())
 		return
 	}
@@ -807,12 +789,12 @@ func (g *Git) setGitHEADContext() {
 			switch action {
 			case "p", "pick":
 				g.CherryPick = true
-				cherry := g.props.GetString(CherryPickIcon, "\uE29B ")
+				cherry := g.props.GetString(CherryPickIcon, "\uE29B")
 				g.HEAD = fmt.Sprintf("%s%s%s onto %s", cherry, commitIcon, g.formatSHA(sha), formatDetached())
 				return
 			case "revert":
 				g.Revert = true
-				revert := g.props.GetString(RevertIcon, "\uF0E2 ")
+				revert := g.props.GetString(RevertIcon, "\uF0E2")
 				g.HEAD = fmt.Sprintf("%s%s%s onto %s", revert, commitIcon, g.formatSHA(sha), formatDetached())
 				return
 			}
@@ -867,7 +849,7 @@ func (g *Git) setPrettyHEADName() {
 
 	// fallback to commit
 	if len(g.ShortHash) == 0 {
-		g.HEAD = g.props.GetString(NoCommitsIcon, "\uF594 ")
+		g.HEAD = g.props.GetString(NoCommitsIcon, "\uF594")
 		return
 	}
 
