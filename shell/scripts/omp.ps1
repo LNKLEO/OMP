@@ -404,61 +404,6 @@ New-Module -Name "OMP-Core" -ScriptBlock {
         Set-PSReadLineOption -PromptText $validLine, $errorLine
     }
 
-    <#
-    .SYNOPSIS
-        Exports the current OMP theme.
-    .DESCRIPTION
-        By default the config is exported in JSON to the clipboard.
-    .EXAMPLE
-        Export-OMPTheme
-
-        Exports the current theme in JSON to the clipboard.
-    .EXAMPLE
-        Export-OMPTheme -Format toml
-
-        Exports the current theme in TOML to the clipboard.
-    .EXAMPLE
-        Export-OMPTheme C:\temp\theme.yaml yaml
-
-        Exports the current theme in YAML to 'C:\temp\theme.yaml'.
-    .EXAMPLE
-        Export-OMPTheme ~\theme.toml toml
-
-        Exports the current theme in TOML to '$HOME\theme.toml'
-    #>
-    function Export-OMPTheme {
-        param(
-            [Parameter(Mandatory = $false)]
-            [string]
-            # The file path where the theme will be exported. If not provided, the config is copied to the clipboard by default.
-            $FilePath,
-            [Parameter(Mandatory = $false)]
-            [ValidateSet('json', 'yaml', 'toml')]
-            [string]
-            # The format of the theme.
-            $Format = 'json'
-        )
-
-        if ($FilePath) {
-            # https://stackoverflow.com/questions/3038337/powershell-resolve-path-that-might-not-exist
-            $FilePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($FilePath)
-        }
-
-        $output = Invoke-Utf8OMP @(
-            "config", "export"
-            "--format=$Format"
-            "--output=$FilePath"
-        )
-        if (!$output) {
-            Write-Host "Theme exported to $(Get-FileHyperlink $FilePath)."
-            return
-        }
-
-        # When no path is provided, copy the output to clipboard.
-        Set-Clipboard $output
-        Write-Host 'Theme copied to clipboard.'
-    }
-
     # perform cleanup on removal so a new initialization in current session works
     if (!$script:ConstrainedLanguageMode) {
         $ExecutionContext.SessionState.Module.OnRemove += {
@@ -487,7 +432,6 @@ New-Module -Name "OMP-Core" -ScriptBlock {
         "Enable-OMPTooltips"
         "Enable-OMPTransientPrompt"
         "Enable-OMPLineError"
-        "Export-OMPTheme"
         "prompt"
     )
 } | Import-Module -Global

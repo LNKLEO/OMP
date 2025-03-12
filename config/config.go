@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/LNKLEO/OMP/color"
+	"github.com/LNKLEO/OMP/log"
 	"github.com/LNKLEO/OMP/runtime"
 	"github.com/LNKLEO/OMP/segments"
 	"github.com/LNKLEO/OMP/shell"
@@ -83,27 +84,33 @@ func (cfg *Config) Features(env runtime.Environment) shell.Features {
 	var feats shell.Features
 
 	if cfg.TransientPrompt != nil {
+		log.Debug("transient prompt enabled")
 		feats = append(feats, shell.Transient)
 	}
 
 	if cfg.ShellIntegration {
+		log.Debug("shell integration enabled")
 		feats = append(feats, shell.FTCSMarks)
 	}
 
 	if cfg.ErrorLine != nil || cfg.ValidLine != nil {
+		log.Debug("error or valid line enabled")
 		feats = append(feats, shell.LineError)
 	}
 
 	if len(cfg.Tooltips) > 0 {
+		log.Debug("tooltips enabled")
 		feats = append(feats, shell.Tooltips)
 	}
 
 	for i, block := range cfg.Blocks {
 		if (i == 0 && block.Newline) && cfg.EnableCursorPositioning {
+			log.Debug("cursor positioning enabled")
 			feats = append(feats, shell.CursorPositioning)
 		}
 
 		if block.Type == RPrompt {
+			log.Debug("rprompt enabled")
 			feats = append(feats, shell.RPrompt)
 		}
 
@@ -111,6 +118,7 @@ func (cfg *Config) Features(env runtime.Environment) shell.Features {
 			if segment.Type == AZ {
 				source := segment.Properties.GetString(segments.Source, segments.FirstMatch)
 				if source == segments.Pwsh || source == segments.FirstMatch {
+					log.Debug("azure enabled")
 					feats = append(feats, shell.Azure)
 				}
 			}
@@ -118,6 +126,7 @@ func (cfg *Config) Features(env runtime.Environment) shell.Features {
 			if segment.Type == GIT {
 				source := segment.Properties.GetString(segments.Source, segments.Cli)
 				if source == segments.Pwsh {
+					log.Debug("posh-git enabled")
 					feats = append(feats, shell.Git)
 				}
 			}
