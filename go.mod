@@ -12,7 +12,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/wayneashleyberry/terminal-dimensions v1.1.0
-	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/sys v0.31.0
 	golang.org/x/text v0.23.0
 	gopkg.in/ini.v1 v1.67.0
@@ -20,7 +20,7 @@ require (
 
 require (
 	github.com/goccy/go-json v0.10.5
-	github.com/goccy/go-yaml v1.15.13
+	github.com/goccy/go-yaml v1.15.23
 	github.com/gookit/goutil v0.6.18
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/pelletier/go-toml/v2 v2.2.3
@@ -34,11 +34,11 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
-	github.com/lufia/plan9stats v0.0.0-20240909124753-873cd0166683 // indirect
+	github.com/lufia/plan9stats v0.0.0-20250303091104-876f3ea5145d // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
-	github.com/tklauser/go-sysconf v0.3.14 // indirect
-	github.com/tklauser/numcpus v0.9.0 // indirect
+	github.com/tklauser/go-sysconf v0.3.15 // indirect
+	github.com/tklauser/numcpus v0.10.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 )
 
