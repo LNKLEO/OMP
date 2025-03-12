@@ -737,7 +737,7 @@ func (g *Git) setGitHEADContext() {
 
 	if g.hasGitFile("MERGE_MSG") {
 		g.Merge = true
-		icon := g.props.GetString(MergeIcon, "\uE727")
+		icon := g.props.GetString(MergeIcon, "\uF407")
 		mergeContext := g.FileContents(g.mainSCMDir, "MERGE_MSG")
 		matches := regex.FindNamedRegexMatch(`Merge (remote-tracking )?(?P<type>branch|commit|tag) '(?P<theirs>.*)'`, mergeContext)
 		// head := g.getGitRefFileSymbolicName("ORIG_HEAD")
@@ -754,7 +754,7 @@ func (g *Git) setGitHEADContext() {
 				headIcon = branchIcon
 				theirs = g.formatBranch(matches["theirs"])
 			}
-			g.HEAD = fmt.Sprintf("%s%s%s\u2192%s", icon, headIcon, theirs, formatDetached())
+			g.HEAD = fmt.Sprintf("%s%s%s\uE0b0%s", icon, headIcon, theirs, formatDetached())
 			return
 		}
 	}
