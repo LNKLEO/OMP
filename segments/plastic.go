@@ -5,9 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LNKLEO/OMP/properties"
 	"github.com/LNKLEO/OMP/regex"
-	"github.com/LNKLEO/OMP/runtime"
 )
 
 type PlasticStatus struct {
@@ -34,11 +32,6 @@ type Plastic struct {
 	scm
 	Behind       bool
 	MergePending bool
-}
-
-func (p *Plastic) Init(props properties.Properties, env runtime.Environment) {
-	p.props = props
-	p.env = env
 }
 
 func (p *Plastic) Template() string {

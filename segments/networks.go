@@ -12,9 +12,7 @@ import (
 
 type Networks struct {
 	base
-
 	Error string
-
 	Networks     string
 	Status       string
 }
@@ -69,11 +67,6 @@ func (n *Networks) Enabled() bool {
 		n.Networks = strings.Join(connectionstrs, Spliter)
 	}
 	return true
-}
-
-func (n *Networks) Init(props properties.Properties, env runtime.Environment) {
-	n.props = props
-	n.env = env
 }
 
 func (n *Networks) ConstructConnectionInfo(connection *runtime.Connection) string {
