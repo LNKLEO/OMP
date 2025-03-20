@@ -48,7 +48,6 @@ const (
 	TOGGLECACHE      = "toggle_cache"
 	PROMPTCOUNTCACHE = "prompt_count_cache"
 	ENGINECACHE      = "engine_cache"
-	FONTLISTCACHE    = "font_list_cache"
 )
 
 type Entry struct {
